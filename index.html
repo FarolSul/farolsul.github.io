@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão Comercial</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">SGC - Sistema de Gestão Comercial</h1>
+                <nav class="nav-desktop">
+                    <button class="nav-item active" data-section="dashboard">Dashboard</button>
+                    <button class="nav-item" data-section="clientes">Clientes</button>
+                    <button class="nav-item" data-section="representadas">Representadas</button>
+                    <button class="nav-item" data-section="produtos">Produtos</button>
+                    <button class="nav-item" data-section="pedidos">Pedidos</button>
+                    <button class="nav-item" data-section="agenda">Agenda</button>
+                    <button class="nav-item" data-section="relatorios">Relatórios</button>
+                </nav>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <nav class="nav-mobile" id="navMobile">
+            <button class="nav-item active" data-section="dashboard">Dashboard</button>
+            <button class="nav-item" data-section="clientes">Clientes</button>
+            <button class="nav-item" data-section="representadas">Representadas</button>
+            <button class="nav-item" data-section="produtos">Produtos</button>
+            <button class="nav-item" data-section="pedidos">Pedidos</button>
+            <button class="nav-item" data-section="agenda">Agenda</button>
+            <button class="nav-item" data-section="relatorios">Relatórios</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <h2>Dashboard</h2>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Vendas do Mês</h3>
+                        <div class="metric-value" id="vendasMes">R$ 0,00</div>
+                        <div class="metric-change positive">+15%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Pedidos Pendentes</h3>
+                        <div class="metric-value" id="pedidosPendentes">0</div>
+                        <div class="metric-change neutral">Aguardando</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Clientes Ativos</h3>
+                        <div class="metric-value" id="clientesAtivos">0</div>
+                        <div class="metric-change positive">+5%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Comissão a Receber</h3>
+                        <div class="metric-value" id="comissaoAReceber">R$ 0,00</div>
+                        <div class="metric-change positive">Este mês</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="chart-section">
+                        <h3>Vendas Mensais</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="vendasChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="alerts-section">
+                        <h3>Alertas e Sugestões</h3>
+                        <div class="alerts-list" id="alertsList">
+                            <!-- Alertas serão inseridos aqui via JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="visits-section">
+                        <h3>Próximas Visitas</h3>
+                        <div class="visits-list" id="proximasVisitas">
+                            <!-- Visitas serão inseridas aqui via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clientes Section -->
+            <section id="clientes" class="section">
+                <div class="section-header">
+                    <h2>Clientes</h2>
+                    <button class="btn btn--primary" onclick="openModal('clienteModal')">Novo Cliente</button>
+                </div>
+                
+                <div class="filters">
+                    <input type="text" placeholder="Buscar clientes..." class="form-control" id="searchClientes">
+                    <select class="form-control" id="filterStatus">
+                        <option value="">Todos os status</option>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                        <option value="prospecto">Prospecto</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="clientesTable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CNPJ/CPF</th>
+                                <th>Telefone</th>
+                                <th>Status</th>
+                                <th>Última Compra</th>
+                                <th>Total Compras</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientesTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Representadas Section -->
+            <section id="representadas" class="section">
+                <div class="section-header">
+                    <h2>Representadas</h2>
+                    <button class="btn btn--primary" onclick="openModal('representadaModal')">Nova Representada</button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table" id="representadasTable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>CNPJ</th>
+                                <th>Telefone</th>
+                                <th>Comissão (%)</th>
+                                <th>Produtos</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="representadasTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Produtos Section -->
+            <section id="produtos" class="section">
+                <div class="section-header">
+                    <h2>Produtos</h2>
+                    <button class="btn btn--primary" onclick="openModal('produtoModal')">Novo Produto</button>
+                </div>
+                
+                <div class="filters">
+                    <input type="text" placeholder="Buscar produtos..." class="form-control" id="searchProdutos">
+                    <select class="form-control" id="filterCategoria">
+                        <option value="">Todas as categorias</option>
+                        <option value="Informática">Informática</option>
+                        <option value="Móveis">Móveis</option>
+                        <option value="Ferramentas">Ferramentas</option>
+                    </select>
+                    <select class="form-control" id="filterRepresentada">
+                        <option value="">Todas as representadas</option>
+                        <!-- Options serão inseridas via JavaScript -->
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="produtosTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Marca</th>
+                                <th>Representada</th>
+                                <th>Preço</th>
+                                <th>Categoria</th>
+                                <th>Estoque</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="produtosTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Pedidos Section -->
+            <section id="pedidos" class="section">
+                <div class="section-header">
+                    <h2>Pedidos</h2>
+                    <button class="btn btn--primary" onclick="openModal('pedidoModal')">Novo Pedido</button>
+                </div>
+                
+                <div class="filters">
+                    <input type="text" placeholder="Buscar pedidos..." class="form-control" id="searchPedidos">
+                    <select class="form-control" id="filterStatusPedido">
+                        <option value="">Todos os status</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="aprovado">Aprovado</option>
+                        <option value="faturado">Faturado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="pedidosTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Comissão</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidosTableBody">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Agenda Section -->
+            <section id="agenda" class="section">
+                <div class="section-header">
+                    <h2>Agenda de Visitas</h2>
+                    <button class="btn btn--primary" onclick="openModal('visitaModal')">Nova Visita</button>
+                </div>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="btn btn--secondary" id="prevMonth">← Anterior</button>
+                        <h3 id="currentMonth">Dezembro 2024</h3>
+                        <button class="btn btn--secondary" id="nextMonth">Próximo →</button>
+                    </div>
+                    <div class="calendar" id="calendar">
+                        <!-- Calendar será construído via JavaScript -->
+                    </div>
+                </div>
+
+                <div class="visits-today">
+                    <h3>Visitas de Hoje</h3>
+                    <div id="visitasHoje">
+                        <!-- Visitas do dia serão inseridas aqui -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Relatórios Section -->
+            <section id="relatorios" class="section">
+                <div class="section-header">
+                    <h2>Relatórios</h2>
+                </div>
+                
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Vendas por Período</h3>
+                        <div class="report-filters">
+                            <input type="date" class="form-control" id="dataInicio">
+                            <input type="date" class="form-control" id="dataFim">
+                            <button class="btn btn--primary" onclick="gerarRelatorioVendas()">Gerar</button>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="relatorioVendasChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Top Produtos</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="topProdutosChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Comissões por Representada</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="comissoesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Performance de Visitas</h3>
+                        <div class="performance-stats" id="performanceVisitas">
+                            <!-- Stats serão inseridas via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modals -->
+        <!-- Cliente Modal -->
+        <div id="clienteModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="clienteModalTitle">Novo Cliente</h3>
+                    <button class="modal-close" onclick="closeModal('clienteModal')">&times;</button>
+                </div>
+                <form id="clienteForm" class="modal-body">
+                    <input type="hidden" id="clienteId">
+                    <div class="form-group">
+                        <label class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="clienteNome" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CNPJ/CPF *</label>
+                        <input type="text" class="form-control" id="clienteCnpj" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone *</label>
+                        <input type="tel" class="form-control" id="clienteTelefone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="clienteEmail">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Endereço</label>
+                        <textarea class="form-control" id="clienteEndereco" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="clienteStatus">
+                            <option value="prospecto">Prospecto</option>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ciclo de Compras (dias)</label>
+                        <input type="number" class="form-control" id="clienteCiclo" min="1" value="30">
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('clienteModal')">Cancelar</button>
+                    <button type="submit" class="btn btn--primary" form="clienteForm">Salvar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Representada Modal -->
+        <div id="representadaModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="representadaModalTitle">Nova Representada</h3>
+                    <button class="modal-close" onclick="closeModal('representadaModal')">&times;</button>
+                </div>
+                <form id="representadaForm" class="modal-body">
+                    <input type="hidden" id="representadaId">
+                    <div class="form-group">
+                        <label class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="representadaNome" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CNPJ *</label>
+                        <input type="text" class="form-control" id="representadaCnpj" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone *</label>
+                        <input type="tel" class="form-control" id="representadaTelefone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="representadaEmail">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Comissão (%) *</label>
+                        <input type="number" class="form-control" id="representadaComissao" min="0" max="100" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Produtos (separados por vírgula)</label>
+                        <textarea class="form-control" id="representadaProdutos" rows="2" placeholder="Ex: Notebooks, Tablets, Acessórios"></textarea>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('representadaModal')">Cancelar</button>
+                    <button type="submit" class="btn btn--primary" form="representadaForm">Salvar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produto Modal -->
+        <div id="produtoModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="produtoModalTitle">Novo Produto</h3>
+                    <button class="modal-close" onclick="closeModal('produtoModal')">&times;</button>
+                </div>
+                <form id="produtoForm" class="modal-body">
+                    <input type="hidden" id="produtoId">
+                    <div class="form-group">
+                        <label class="form-label">Código *</label>
+                        <input type="text" class="form-control" id="produtoCodigo" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição *</label>
+                        <input type="text" class="form-control" id="produtoDescricao" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Marca *</label>
+                        <input type="text" class="form-control" id="produtoMarca" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Representada *</label>
+                        <select class="form-control" id="produtoRepresentada" required>
+                            <option value="">Selecione...</option>
+                            <!-- Options serão inseridas via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preço (R$) *</label>
+                        <input type="number" class="form-control" id="produtoPreco" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria *</label>
+                        <input type="text" class="form-control" id="produtoCategoria" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estoque</label>
+                        <input type="number" class="form-control" id="produtoEstoque" min="0" value="0">
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('produtoModal')">Cancelar</button>
+                    <button type="submit" class="btn btn--primary" form="produtoForm">Salvar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pedido Modal -->
+        <div id="pedidoModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="pedidoModalTitle">Novo Pedido</h3>
+                    <button class="modal-close" onclick="closeModal('pedidoModal')">&times;</button>
+                </div>
+                <form id="pedidoForm" class="modal-body">
+                    <input type="hidden" id="pedidoId">
+                    <div class="form-group">
+                        <label class="form-label">Cliente *</label>
+                        <select class="form-control" id="pedidoCliente" required>
+                            <option value="">Selecione...</option>
+                            <!-- Options serão inseridas via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data *</label>
+                        <input type="date" class="form-control" id="pedidoData" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="pedidoStatus">
+                            <option value="pendente">Pendente</option>
+                            <option value="aprovado">Aprovado</option>
+                            <option value="faturado">Faturado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="pedido-items">
+                        <h4>Itens do Pedido</h4>
+                        <div class="add-item-form">
+                            <div class="form-row">
+                                <select class="form-control" id="itemProduto">
+                                    <option value="">Selecione um produto...</option>
+                                    <!-- Options serão inseridas via JavaScript -->
+                                </select>
+                                <input type="number" class="form-control" id="itemQuantidade" placeholder="Qtd" min="1" value="1">
+                                <input type="number" class="form-control" id="itemDesconto" placeholder="Desc %" min="0" max="100" step="0.1" value="0">
+                                <button type="button" class="btn btn--primary" onclick="addItemToPedido()">Adicionar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="items-table">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço Unit.</th>
+                                        <th>Desconto</th>
+                                        <th>Total</th>
+                                        <th>Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pedidoItensTableBody">
+                                    <!-- Itens serão inseridos via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="pedido-totals">
+                            <div class="total-row">
+                                <strong>Subtotal: <span id="pedidoSubtotal">R$ 0,00</span></strong>
+                            </div>
+                            <div class="total-row">
+                                <strong>Comissão Total: <span id="pedidoComissaoTotal">R$ 0,00</span></strong>
+                            </div>
+                            <div class="total-row">
+                                <strong>Total: <span id="pedidoTotal">R$ 0,00</span></strong>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('pedidoModal')">Cancelar</button>
+                    <button type="submit" class="btn btn--primary" form="pedidoForm">Salvar Pedido</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visita Modal -->
+        <div id="visitaModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="visitaModalTitle">Nova Visita</h3>
+                    <button class="modal-close" onclick="closeModal('visitaModal')">&times;</button>
+                </div>
+                <form id="visitaForm" class="modal-body">
+                    <input type="hidden" id="visitaId">
+                    <div class="form-group">
+                        <label class="form-label">Cliente *</label>
+                        <select class="form-control" id="visitaCliente" required>
+                            <option value="">Selecione...</option>
+                            <!-- Options serão inseridas via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data *</label>
+                        <input type="date" class="form-control" id="visitaData" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Horário *</label>
+                        <input type="time" class="form-control" id="visitaHorario" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="visitaStatus">
+                            <option value="agendada">Agendada</option>
+                            <option value="realizada">Realizada</option>
+                            <option value="cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-control" id="visitaObservacoes" rows="3"></textarea>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('visitaModal')">Cancelar</button>
+                    <button type="submit" class="btn btn--primary" form="visitaForm">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
