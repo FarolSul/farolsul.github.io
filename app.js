@@ -5,17 +5,26 @@ class SGC {
             clientes: [],
             representadas: [],
             produtos: [],
-            pedidos: [],
+            orcamentos: [],
             visitas: [],
+            configuracoes: {},
             metricas: {}
         };
         this.currentDate = new Date();
         this.charts = {};
-        this.currentPedidoItems = [];
-        this.init();
+        this.currentOrcamentoItems = [];
+        this.nextOrcamentoNumber = 1;
+        this.initialized = false;
     }
 
-    init() {
+    async init() {
+        if (this.initialized) return;
+        
+        console.log('Starting SGC initialization...');
+        
+        // Wait for DOM to be ready
+        await this.waitForDOM();
+        
         this.loadData();
         this.setupNavigation();
         this.setupModals();
@@ -25,7 +34,21 @@ class SGC {
         this.renderAllTables();
         this.setupCalendar();
         this.renderReports();
+        this.loadConfigurations();
+        
+        this.initialized = true;
+        console.log('SGC initialization completed');
         this.showNotification('Sistema carregado com sucesso!', 'success');
+    }
+
+    waitForDOM() {
+        return new Promise((resolve) => {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', resolve);
+            } else {
+                resolve();
+            }
+        });
     }
 
     // Data Management
@@ -33,6 +56,7 @@ class SGC {
         const savedData = localStorage.getItem('sgc_data');
         if (savedData) {
             this.data = JSON.parse(savedData);
+            this.nextOrcamentoNumber = this.data.orcamentos.length + 1;
         } else {
             // Dados iniciais de exemplo
             this.data = {
@@ -44,6 +68,7 @@ class SGC {
                         telefone: "(11) 3456-7890",
                         email: "contato@techsolutions.com.br",
                         endereco: "Rua das Flores, 123 - São Paulo/SP",
+                        contato: "Ana Santos",
                         status: "ativo",
                         ultimaCompra: "2024-11-15",
                         cicloCompras: 45,
@@ -56,6 +81,7 @@ class SGC {
                         telefone: "(41) 2345-6789", 
                         email: "vendas@moveisedesign.com.br",
                         endereco: "Av. Batel, 456 - Curitiba/PR",
+                        contato: "Carlos Mendes",
                         status: "ativo",
                         ultimaCompra: "2024-10-20",
                         cicloCompras: 60,
@@ -68,6 +94,7 @@ class SGC {
                         telefone: "(51) 9876-5432",
                         email: "compras@ferramentassul.com.br",
                         endereco: "Rua Industrial, 789 - Porto Alegre/RS",
+                        contato: "Maria Oliveira",
                         status: "inativo",
                         ultimaCompra: "2024-08-10",
                         cicloCompras: 30,
@@ -107,7 +134,7 @@ class SGC {
                     {
                         id: 1,
                         codigo: "NB001",
-                        descricao: "Notebook ElectronTech i7",
+                        descricao: "Notebook ElectronTech Intel i7 16GB RAM 512GB SSD",
                         marca: "ElectronTech",
                         representada: "ElectronTech Brasil",
                         preco: 2500.00,
@@ -117,7 +144,7 @@ class SGC {
                     {
                         id: 2,
                         codigo: "MES001",
-                        descricao: "Mesa de Escritório Premium",
+                        descricao: "Mesa de Escritório Premium Madeira Nobre 1,60m",
                         marca: "MadeiraNobre",
                         representada: "MadeiraNobre Móveis",
                         preco: 850.00,
@@ -127,35 +154,56 @@ class SGC {
                     {
                         id: 3,
                         codigo: "FUR001",
-                        descricao: "Furadeira Impact Pro",
+                        descricao: "Furadeira Impact Pro 800W com Kit Brocas",
                         marca: "FerraBrasil",
                         representada: "FerraBrasil Ltda",
                         preco: 320.00,
                         categoria: "Ferramentas",
                         estoque: 40
-                    }
-                ],
-                pedidos: [
-                    {
-                        id: 1,
-                        cliente: "TechSolutions Ltda",
-                        data: "2024-11-15",
-                        status: "aprovado",
-                        total: 5000.00,
-                        comissao: 425.00,
-                        itens: [
-                            {produto: "Notebook ElectronTech i7", quantidade: 2, preco: 2500.00, desconto: 0}
-                        ]
                     },
                     {
-                        id: 2,
-                        cliente: "Móveis & Design",
-                        data: "2024-10-20",
-                        status: "pendente",
-                        total: 1700.00,
-                        comissao: 204.00,
+                        id: 4,
+                        codigo: "TAB001",
+                        descricao: "Tablet ElectronTech 10\" 64GB WiFi + 4G",
+                        marca: "ElectronTech",
+                        representada: "ElectronTech Brasil",
+                        preco: 899.00,
+                        categoria: "Informática",
+                        estoque: 30
+                    },
+                    {
+                        id: 5,
+                        codigo: "CAD001",
+                        descricao: "Cadeira Ergonômica Executiva Couro Sintético",
+                        marca: "MadeiraNobre",
+                        representada: "MadeiraNobre Móveis",
+                        preco: 450.00,
+                        categoria: "Móveis",
+                        estoque: 20
+                    }
+                ],
+                orcamentos: [
+                    {
+                        id: 1,
+                        numero: "ORÇ-2024-001",
+                        cliente: "TechSolutions Ltda",
+                        data: "2024-12-15",
+                        validade: "2025-01-14",
+                        status: "enviado",
+                        subtotal: 5000.00,
+                        desconto: 0,
+                        total: 5000.00,
+                        comissao: 425.00,
+                        observacoes: "Entrega em 15 dias úteis. Pagamento 30 dias.",
                         itens: [
-                            {produto: "Mesa de Escritório Premium", quantidade: 2, preco: 850.00, desconto: 0}
+                            {
+                                codigo: "NB001",
+                                produto: "Notebook ElectronTech Intel i7 16GB RAM 512GB SSD", 
+                                quantidade: 2, 
+                                precoUnitario: 2500.00, 
+                                desconto: 0, 
+                                total: 5000.00
+                            }
                         ]
                     }
                 ],
@@ -166,7 +214,7 @@ class SGC {
                         data: "2024-12-20",
                         horario: "14:00",
                         status: "agendada",
-                        observacoes: "Apresentar novos produtos"
+                        observacoes: "Apresentar novos produtos e orçamento"
                     },
                     {
                         id: 2,
@@ -177,9 +225,24 @@ class SGC {
                         observacoes: "Reativar cliente - oferta especial"
                     }
                 ],
+                configuracoes: {
+                    representante: {
+                        nome: "João Silva Representações",
+                        cnpj: "12.345.678/0001-90",
+                        endereco: "Rua Comercial, 123 - Centro - Curitiba/PR",
+                        telefone: "(41) 3333-4444",
+                        email: "joao@representacoes.com.br"
+                    },
+                    orcamento: {
+                        condicoesPagamento: "30 dias após entrega",
+                        prazoEntrega: "15 dias úteis",
+                        validadeOrcamento: 30,
+                        observacoesPadrao: "Preços válidos por 30 dias. Produtos sujeitos à disponibilidade de estoque."
+                    }
+                },
                 metricas: {
                     vendasMes: 23500.00,
-                    pedidosPendentes: 8,
+                    orcamentosPendentes: 3,
                     clientesAtivos: 25,
                     comissaoAReceber: 1850.00,
                     metaMensal: 50000.00
@@ -193,73 +256,133 @@ class SGC {
         localStorage.setItem('sgc_data', JSON.stringify(this.data));
     }
 
-    // Navigation
+    // Navigation - Fixed implementation
     setupNavigation() {
+        console.log('Setting up navigation...');
+        
+        // Get all navigation items
         const navItems = document.querySelectorAll('.nav-item');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navMobile = document.getElementById('navMobile');
 
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
+        console.log('Found nav items:', navItems.length);
+
+        // Setup navigation event listeners
+        navItems.forEach((item, index) => {
+            console.log(`Setting up nav item ${index}:`, item.getAttribute('data-section'));
+            
+            // Remove any existing listeners by cloning the node
+            const newItem = item.cloneNode(true);
+            item.parentNode.replaceChild(newItem, item);
+            
+            // Add click event listener
+            newItem.addEventListener('click', (e) => {
                 e.preventDefault();
-                const section = e.target.getAttribute('data-section');
-                console.log('Navigating to:', section); // Debug log
-                this.showSection(section);
+                e.stopPropagation();
                 
-                // Update active states
-                navItems.forEach(nav => nav.classList.remove('active'));
-                document.querySelectorAll(`[data-section="${section}"]`).forEach(nav => nav.classList.add('active'));
+                const section = newItem.getAttribute('data-section');
+                console.log('Navigation clicked:', section);
                 
-                // Hide mobile menu
-                navMobile.classList.remove('show');
+                if (section) {
+                    this.navigateToSection(section);
+                }
             });
         });
 
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
+        // Setup mobile menu
+        if (mobileMenuBtn && navMobile) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 navMobile.classList.toggle('show');
             });
         }
+
+        console.log('Navigation setup completed');
     }
 
-    showSection(sectionId) {
-        console.log('Showing section:', sectionId); // Debug log
-        // Hide all sections
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.remove('active');
-        });
+    navigateToSection(sectionId) {
+        console.log('Navigating to section:', sectionId);
         
-        // Show target section
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
+        try {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
             
-            // Trigger specific rendering for certain sections
-            if (sectionId === 'agenda') {
-                this.renderCalendar();
-            } else if (sectionId === 'relatorios') {
-                this.renderReports();
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                console.log('Successfully activated section:', sectionId);
+                
+                // Update navigation active states
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                document.querySelectorAll(`[data-section="${sectionId}"]`).forEach(nav => {
+                    nav.classList.add('active');
+                });
+                
+                // Close mobile menu if open
+                const navMobile = document.getElementById('navMobile');
+                if (navMobile) {
+                    navMobile.classList.remove('show');
+                }
+                
+                // Trigger specific rendering for certain sections
+                this.handleSectionSpecificLogic(sectionId);
+                
+            } else {
+                console.error('Section not found:', sectionId);
+                this.showNotification(`Seção não encontrada: ${sectionId}`, 'error');
             }
-        } else {
-            console.error('Section not found:', sectionId);
+        } catch (error) {
+            console.error('Error navigating to section:', error);
+            this.showNotification('Erro na navegação', 'error');
+        }
+    }
+
+    handleSectionSpecificLogic(sectionId) {
+        // Handle section-specific initialization
+        switch(sectionId) {
+            case 'agenda':
+                setTimeout(() => this.renderCalendar(), 100);
+                break;
+            case 'relatorios':
+                setTimeout(() => this.renderReports(), 100);
+                break;
+            case 'configuracoes':
+                setTimeout(() => this.loadConfigurations(), 100);
+                break;
+            case 'orcamentos':
+                // Ensure the budget table is rendered when navigating to budgets
+                setTimeout(() => this.renderOrcamentosTable(), 100);
+                break;
         }
     }
 
     // Modals
     setupModals() {
+        console.log('Setting up modals...');
+        
         // Make functions globally available
         window.openModal = (modalId) => {
+            console.log('Opening modal:', modalId);
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.remove('hidden');
-                if (modalId === 'pedidoModal') {
-                    this.setupPedidoModal();
+                if (modalId === 'orcamentoModal') {
+                    this.setupOrcamentoModal();
                 }
                 this.populateSelects();
+            } else {
+                console.error('Modal not found:', modalId);
             }
         };
 
         window.closeModal = (modalId) => {
+            console.log('Closing modal:', modalId);
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.add('hidden');
@@ -275,6 +398,8 @@ class SGC {
                 }
             });
         });
+        
+        console.log('Modals setup completed');
     }
 
     resetForm(modalId) {
@@ -286,11 +411,12 @@ class SGC {
         const idField = modal.querySelector('input[type="hidden"]');
         if (idField) idField.value = '';
         
-        // Reset pedido items table
-        if (modalId === 'pedidoModal') {
-            document.getElementById('pedidoItensTableBody').innerHTML = '';
-            this.currentPedidoItems = [];
-            this.updatePedidoTotals();
+        // Reset orçamento items table
+        if (modalId === 'orcamentoModal') {
+            const tbody = document.getElementById('orcamentoItensTableBody');
+            if (tbody) tbody.innerHTML = '';
+            this.currentOrcamentoItems = [];
+            this.updateOrcamentoTotals();
         }
 
         // Reset modal title
@@ -300,7 +426,7 @@ class SGC {
                 'clienteModal': 'Novo Cliente',
                 'representadaModal': 'Nova Representada',
                 'produtoModal': 'Novo Produto',
-                'pedidoModal': 'Novo Pedido',
+                'orcamentoModal': 'Novo Orçamento',
                 'visitaModal': 'Nova Visita'
             };
             titleElement.textContent = defaultTitles[modalId] || 'Novo';
@@ -309,6 +435,8 @@ class SGC {
 
     // Forms
     setupForms() {
+        console.log('Setting up forms...');
+        
         // Cliente Form
         const clienteForm = document.getElementById('clienteForm');
         if (clienteForm) {
@@ -336,12 +464,12 @@ class SGC {
             });
         }
 
-        // Pedido Form
-        const pedidoForm = document.getElementById('pedidoForm');
-        if (pedidoForm) {
-            pedidoForm.addEventListener('submit', (e) => {
+        // Orçamento Form
+        const orcamentoForm = document.getElementById('orcamentoForm');
+        if (orcamentoForm) {
+            orcamentoForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                this.savePedido();
+                this.saveOrcamento();
             });
         }
 
@@ -354,9 +482,31 @@ class SGC {
             });
         }
 
-        // Add item to pedido button
-        window.addItemToPedido = () => this.addItemToPedido();
-        window.removeItemFromPedido = (button) => this.removeItemFromPedido(button);
+        // Configurações Forms
+        const configRepresentanteForm = document.getElementById('configRepresentanteForm');
+        if (configRepresentanteForm) {
+            configRepresentanteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveConfigRepresentante();
+            });
+        }
+
+        const configOrcamentoForm = document.getElementById('configOrcamentoForm');
+        if (configOrcamentoForm) {
+            configOrcamentoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveConfigOrcamento();
+            });
+        }
+
+        // Global functions for buttons
+        window.addItemToOrcamento = () => this.addItemToOrcamento();
+        window.removeItemFromOrcamento = (index) => this.removeItemFromOrcamento(index);
+        window.previewOrcamento = () => this.previewOrcamento();
+        window.gerarPDF = () => this.gerarPDF();
+        window.gerarPDFFromPreview = () => this.gerarPDFFromPreview();
+        
+        console.log('Forms setup completed');
     }
 
     // CRUD Operations - Clientes
@@ -369,6 +519,7 @@ class SGC {
             telefone: document.getElementById('clienteTelefone').value,
             email: document.getElementById('clienteEmail').value,
             endereco: document.getElementById('clienteEndereco').value,
+            contato: document.getElementById('clienteContato').value,
             status: document.getElementById('clienteStatus').value,
             cicloCompras: parseInt(document.getElementById('clienteCiclo').value),
             ultimaCompra: id ? this.data.clientes.find(c => c.id == id)?.ultimaCompra : null,
@@ -398,8 +549,9 @@ class SGC {
         document.getElementById('clienteNome').value = cliente.nome;
         document.getElementById('clienteCnpj').value = cliente.cnpj;
         document.getElementById('clienteTelefone').value = cliente.telefone;
-        document.getElementById('clienteEmail').value = cliente.email;
-        document.getElementById('clienteEndereco').value = cliente.endereco;
+        document.getElementById('clienteEmail').value = cliente.email || '';
+        document.getElementById('clienteEndereco').value = cliente.endereco || '';
+        document.getElementById('clienteContato').value = cliente.contato || '';
         document.getElementById('clienteStatus').value = cliente.status;
         document.getElementById('clienteCiclo').value = cliente.cicloCompras;
 
@@ -453,7 +605,7 @@ class SGC {
         document.getElementById('representadaNome').value = representada.nome;
         document.getElementById('representadaCnpj').value = representada.cnpj;
         document.getElementById('representadaTelefone').value = representada.telefone;
-        document.getElementById('representadaEmail').value = representada.email;
+        document.getElementById('representadaEmail').value = representada.email || '';
         document.getElementById('representadaComissao').value = representada.comissao;
         document.getElementById('representadaProdutos').value = representada.produtos.join(', ');
 
@@ -526,63 +678,69 @@ class SGC {
         }
     }
 
-    // CRUD Operations - Pedidos
-    setupPedidoModal() {
+    // CRUD Operations - Orçamentos
+    setupOrcamentoModal() {
         this.populateClienteSelects();
         this.populateProdutoSelects();
-        document.getElementById('pedidoData').value = this.formatDateForInput(new Date());
+        document.getElementById('orcamentoData').value = this.formatDateForInput(new Date());
     }
 
-    savePedido() {
-        const id = document.getElementById('pedidoId').value;
-        const cliente = document.getElementById('pedidoCliente').value;
+    saveOrcamento() {
+        const id = document.getElementById('orcamentoId').value;
+        const cliente = document.getElementById('orcamentoCliente').value;
 
         if (!cliente) {
             this.showNotification('Selecione um cliente!', 'error');
             return;
         }
 
-        if (this.currentPedidoItems.length === 0) {
-            this.showNotification('Adicione pelo menos um item ao pedido!', 'error');
+        if (this.currentOrcamentoItems.length === 0) {
+            this.showNotification('Adicione pelo menos um item ao orçamento!', 'error');
             return;
         }
 
-        const total = this.calculatePedidoTotal();
-        const comissao = this.calculatePedidoComissao();
+        const subtotal = this.calculateOrcamentoSubtotal();
+        const descontoTotal = this.calculateOrcamentoDesconto();
+        const total = subtotal - descontoTotal;
+        const comissao = this.calculateOrcamentoComissao();
+        
+        const dataOrcamento = new Date(document.getElementById('orcamentoData').value);
+        const validadeDias = this.data.configuracoes.orcamento?.validadeOrcamento || 30;
+        const dataValidade = new Date(dataOrcamento);
+        dataValidade.setDate(dataValidade.getDate() + validadeDias);
 
-        const pedido = {
+        const orcamento = {
             id: id ? parseInt(id) : Date.now(),
+            numero: id ? this.data.orcamentos.find(o => o.id == id)?.numero : `ORÇ-2025-${String(this.nextOrcamentoNumber).padStart(3, '0')}`,
             cliente: cliente,
-            data: document.getElementById('pedidoData').value,
-            status: document.getElementById('pedidoStatus').value,
+            data: document.getElementById('orcamentoData').value,
+            validade: this.formatDateForInput(dataValidade),
+            status: document.getElementById('orcamentoStatus').value,
+            subtotal: subtotal,
+            desconto: descontoTotal,
             total: total,
             comissao: comissao,
-            itens: [...this.currentPedidoItems]
+            observacoes: document.getElementById('orcamentoObservacoes').value,
+            itens: [...this.currentOrcamentoItems]
         };
 
         if (id) {
-            const index = this.data.pedidos.findIndex(p => p.id == id);
-            this.data.pedidos[index] = pedido;
+            const index = this.data.orcamentos.findIndex(o => o.id == id);
+            this.data.orcamentos[index] = orcamento;
         } else {
-            this.data.pedidos.push(pedido);
-            
-            // Update cliente's ultima compra
-            const clienteObj = this.data.clientes.find(c => c.nome === pedido.cliente);
-            if (clienteObj) {
-                clienteObj.ultimaCompra = pedido.data;
-                clienteObj.totalCompras = (clienteObj.totalCompras || 0) + pedido.total;
-            }
+            this.data.orcamentos.push(orcamento);
+            this.nextOrcamentoNumber++;
         }
 
         this.saveData();
-        this.renderPedidosTable();
+        this.renderOrcamentosTable();
         this.updateMetrics();
         this.renderDashboard();
-        window.closeModal('pedidoModal');
-        this.showNotification('Pedido salvo com sucesso!', 'success');
+        window.closeModal('orcamentoModal');
+        this.showNotification('Orçamento salvo com sucesso!', 'success');
     }
 
-    addItemToPedido() {
+    addItemToOrcamento() {
         const produtoSelect = document.getElementById('itemProduto');
         const quantidade = parseInt(document.getElementById('itemQuantidade').value) || 1;
         const desconto = parseFloat(document.getElementById('itemDesconto').value) || 0;
@@ -596,23 +754,26 @@ class SGC {
         if (!produto) return;
 
         // Check if product already exists in items
-        const existingItemIndex = this.currentPedidoItems.findIndex(item => item.produto === produto.descricao);
+        const existingItemIndex = this.currentOrcamentoItems.findIndex(item => item.produto === produto.descricao);
         
         if (existingItemIndex >= 0) {
             // Update existing item
-            this.currentPedidoItems[existingItemIndex].quantidade += quantidade;
+            this.currentOrcamentoItems[existingItemIndex].quantidade += quantidade;
+            this.currentOrcamentoItems[existingItemIndex].desconto = desconto;
         } else {
             // Add new item
-            this.currentPedidoItems.push({
+            this.currentOrcamentoItems.push({
+                codigo: produto.codigo,
                 produto: produto.descricao,
                 quantidade: quantidade,
-                preco: produto.preco,
-                desconto: desconto
+                precoUnitario: produto.preco,
+                desconto: desconto,
+                total: produto.preco * quantidade * (1 - desconto/100)
             });
         }
 
-        this.renderPedidoItemsTable();
-        this.updatePedidoTotals();
+        this.renderOrcamentoItemsTable();
+        this.updateOrcamentoTotals();
 
         // Reset form
         produtoSelect.value = '';
@@ -620,56 +781,76 @@ class SGC {
         document.getElementById('itemDesconto').value = '0';
     }
 
-    renderPedidoItemsTable() {
-        const tableBody = document.getElementById('pedidoItensTableBody');
+    renderOrcamentoItemsTable() {
+        const tableBody = document.getElementById('orcamentoItensTableBody');
+        if (!tableBody) return;
+        
         tableBody.innerHTML = '';
 
-        this.currentPedidoItems.forEach((item, index) => {
-            const row = document.createElement('tr');
-            const subtotal = item.preco * item.quantidade * (1 - item.desconto/100);
+        this.currentOrcamentoItems.forEach((item, index) => {
+            const subtotalItem = item.precoUnitario * item.quantidade;
+            const descontoValor = subtotalItem * (item.desconto / 100);
+            const total = subtotalItem - descontoValor;
             
+            const row = document.createElement('tr');
             row.innerHTML = `
+                <td>${item.codigo}</td>
                 <td>${item.produto}</td>
                 <td>${item.quantidade}</td>
-                <td>R$ ${this.formatCurrency(item.preco)}</td>
+                <td>R$ ${this.formatCurrency(item.precoUnitario)}</td>
                 <td>${item.desconto}%</td>
-                <td>R$ ${this.formatCurrency(subtotal)}</td>
-                <td><button type="button" class="btn-sm btn-delete" onclick="sgc.removeItemFromPedido(${index})">Remover</button></td>
+                <td>R$ ${this.formatCurrency(total)}</td>
+                <td><button type="button" class="btn-sm btn-delete" onclick="sgc.removeItemFromOrcamento(${index})">Remover</button></td>
             `;
             tableBody.appendChild(row);
         });
     }
 
-    removeItemFromPedido(index) {
-        this.currentPedidoItems.splice(index, 1);
-        this.renderPedidoItemsTable();
-        this.updatePedidoTotals();
+    removeItemFromOrcamento(index) {
+        this.currentOrcamentoItems.splice(index, 1);
+        this.renderOrcamentoItemsTable();
+        this.updateOrcamentoTotals();
     }
 
-    updatePedidoTotals() {
-        const subtotal = this.calculatePedidoTotal();
-        const comissao = this.calculatePedidoComissao();
+    updateOrcamentoTotals() {
+        const subtotal = this.calculateOrcamentoSubtotal();
+        const descontoTotal = this.calculateOrcamentoDesconto();
+        const total = subtotal - descontoTotal;
+        const comissao = this.calculateOrcamentoComissao();
 
-        document.getElementById('pedidoSubtotal').textContent = `R$ ${this.formatCurrency(subtotal)}`;
-        document.getElementById('pedidoComissaoTotal').textContent = `R$ ${this.formatCurrency(comissao)}`;
-        document.getElementById('pedidoTotal').textContent = `R$ ${this.formatCurrency(subtotal)}`;
+        const subtotalEl = document.getElementById('orcamentoSubtotal');
+        const descontoEl = document.getElementById('orcamentoDescontoTotal');
+        const totalEl = document.getElementById('orcamentoTotal');
+        const comissaoEl = document.getElementById('orcamentoComissaoTotal');
+
+        if (subtotalEl) subtotalEl.textContent = `R$ ${this.formatCurrency(subtotal)}`;
+        if (descontoEl) descontoEl.textContent = `R$ ${this.formatCurrency(descontoTotal)}`;
+        if (totalEl) totalEl.textContent = `R$ ${this.formatCurrency(total)}`;
+        if (comissaoEl) comissaoEl.textContent = `R$ ${this.formatCurrency(comissao)}`;
     }
 
-    calculatePedidoTotal() {
-        return this.currentPedidoItems.reduce((total, item) => {
-            return total + (item.preco * item.quantidade * (1 - item.desconto/100));
+    calculateOrcamentoSubtotal() {
+        return this.currentOrcamentoItems.reduce((total, item) => {
+            return total + (item.precoUnitario * item.quantidade);
         }, 0);
     }
 
-    calculatePedidoComissao() {
+    calculateOrcamentoDesconto() {
+        return this.currentOrcamentoItems.reduce((totalDesconto, item) => {
+            const subtotalItem = item.precoUnitario * item.quantidade;
+            return totalDesconto + (subtotalItem * (item.desconto / 100));
+        }, 0);
+    }
+
+    calculateOrcamentoComissao() {
         let comissaoTotal = 0;
         
-        this.currentPedidoItems.forEach(item => {
+        this.currentOrcamentoItems.forEach(item => {
             const produto = this.data.produtos.find(p => p.descricao === item.produto);
             if (produto) {
                 const representada = this.data.representadas.find(r => r.nome === produto.representada);
                 if (representada) {
-                    const valorItem = item.preco * item.quantidade * (1 - item.desconto/100);
+                    const valorItem = item.precoUnitario * item.quantidade * (1 - item.desconto/100);
                     comissaoTotal += valorItem * (representada.comissao / 100);
                 }
             }
@@ -678,33 +859,433 @@ class SGC {
         return comissaoTotal;
     }
 
-    editPedido(id) {
-        const pedido = this.data.pedidos.find(p => p.id == id);
-        if (!pedido) return;
+    editOrcamento(id) {
+        const orcamento = this.data.orcamentos.find(o => o.id == id);
+        if (!orcamento) return;
 
-        document.getElementById('pedidoId').value = pedido.id;
-        document.getElementById('pedidoCliente').value = pedido.cliente;
-        document.getElementById('pedidoData').value = pedido.data;
-        document.getElementById('pedidoStatus').value = pedido.status;
+        document.getElementById('orcamentoId').value = orcamento.id;
+        document.getElementById('orcamentoCliente').value = orcamento.cliente;
+        document.getElementById('orcamentoData').value = orcamento.data;
+        document.getElementById('orcamentoStatus').value = orcamento.status;
+        document.getElementById('orcamentoObservacoes').value = orcamento.observacoes || '';
 
         // Load items
-        this.currentPedidoItems = [...pedido.itens];
-        this.renderPedidoItemsTable();
-        this.updatePedidoTotals();
+        this.currentOrcamentoItems = [...orcamento.itens];
+        this.renderOrcamentoItemsTable();
+        this.updateOrcamentoTotals();
 
-        document.getElementById('pedidoModalTitle').textContent = 'Editar Pedido';
-        window.openModal('pedidoModal');
+        document.getElementById('orcamentoModalTitle').textContent = 'Editar Orçamento';
+        window.openModal('orcamentoModal');
     }
 
-    deletePedido(id) {
-        if (confirm('Tem certeza que deseja excluir este pedido?')) {
-            this.data.pedidos = this.data.pedidos.filter(p => p.id != id);
+    deleteOrcamento(id) {
+        if (confirm('Tem certeza que deseja excluir este orçamento?')) {
+            this.data.orcamentos = this.data.orcamentos.filter(o => o.id != id);
             this.saveData();
-            this.renderPedidosTable();
+            this.renderOrcamentosTable();
             this.updateMetrics();
             this.renderDashboard();
-            this.showNotification('Pedido excluído com sucesso!', 'success');
+            this.showNotification('Orçamento excluído com sucesso!', 'success');
         }
+    }
+
+    // PDF and Preview Functions
+    previewOrcamento() {
+        const cliente = document.getElementById('orcamentoCliente').value;
+        if (!cliente || this.currentOrcamentoItems.length === 0) {
+            this.showNotification('Configure o cliente e adicione itens ao orçamento!', 'error');
+            return;
+        }
+
+        this.generatePreview();
+        window.openModal('previewModal');
+    }
+
+    generatePreview() {
+        const cliente = this.data.clientes.find(c => c.nome === document.getElementById('orcamentoCliente').value);
+        const config = this.data.configuracoes;
+        
+        const dataOrcamento = new Date(document.getElementById('orcamentoData').value);
+        const validadeDias = config.orcamento?.validadeOrcamento || 30;
+        const dataValidade = new Date(dataOrcamento);
+        dataValidade.setDate(dataValidade.getDate() + validadeDias);
+
+        const subtotal = this.calculateOrcamentoSubtotal();
+        const descontoTotal = this.calculateOrcamentoDesconto();
+        const total = subtotal - descontoTotal;
+
+        const previewContent = document.getElementById('previewContent');
+        if (!previewContent) return;
+        
+        previewContent.innerHTML = `
+            <div class="header-section">
+                <div class="company-info">
+                    <h1>${config.representante?.nome || 'Representação Comercial'}</h1>
+                    <p><strong>CNPJ:</strong> ${config.representante?.cnpj || 'Não informado'}</p>
+                    <p><strong>Endereço:</strong> ${config.representante?.endereco || 'Não informado'}</p>
+                    <p><strong>Telefone:</strong> ${config.representante?.telefone || 'Não informado'}</p>
+                    <p><strong>Email:</strong> ${config.representante?.email || 'Não informado'}</p>
+                </div>
+                <div class="orcamento-info">
+                    <h2>ORÇAMENTO</h2>
+                    <p><strong>Número:</strong> ORÇ-2025-${String(this.nextOrcamentoNumber).padStart(3, '0')}</p>
+                    <p><strong>Data:</strong> ${this.formatDate(document.getElementById('orcamentoData').value)}</p>
+                    <p><strong>Validade:</strong> ${this.formatDate(this.formatDateForInput(dataValidade))}</p>
+                </div>
+            </div>
+
+            <div class="client-section">
+                <h3>DADOS DO CLIENTE</h3>
+                <p><strong>Razão Social:</strong> ${cliente?.nome || 'Cliente não encontrado'}</p>
+                <p><strong>CNPJ/CPF:</strong> ${cliente?.cnpj || 'Não informado'}</p>
+                <p><strong>Endereço:</strong> ${cliente?.endereco || 'Não informado'}</p>
+                <p><strong>Telefone:</strong> ${cliente?.telefone || 'Não informado'}</p>
+                <p><strong>Email:</strong> ${cliente?.email || 'Não informado'}</p>
+                ${cliente?.contato ? `<p><strong>Contato:</strong> ${cliente.contato}</p>` : ''}
+            </div>
+
+            <div class="items-section">
+                <h3>ITENS DO ORÇAMENTO</h3>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Qtd</th>
+                            <th>Preço Unit.</th>
+                            <th>Desconto</th>
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${this.currentOrcamentoItems.map(item => {
+                            const subtotalItem = item.precoUnitario * item.quantidade;
+                            const descontoValor = subtotalItem * (item.desconto / 100);
+                            const totalItem = subtotalItem - descontoValor;
+                            return `
+                                <tr>
+                                    <td>${item.codigo}</td>
+                                    <td>${item.produto}</td>
+                                    <td>${item.quantidade}</td>
+                                    <td>R$ ${this.formatCurrency(item.precoUnitario)}</td>
+                                    <td>${item.desconto}%</td>
+                                    <td class="text-right">R$ ${this.formatCurrency(totalItem)}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="totals-section">
+                <table class="totals-table">
+                    <tr>
+                        <td><strong>Subtotal:</strong></td>
+                        <td class="text-right">R$ ${this.formatCurrency(subtotal)}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Desconto Total:</strong></td>
+                        <td class="text-right">R$ ${this.formatCurrency(descontoTotal)}</td>
+                    </tr>
+                    <tr class="total-final">
+                        <td><strong>TOTAL GERAL:</strong></td>
+                        <td class="text-right"><strong>R$ ${this.formatCurrency(total)}</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="footer-section">
+                <div class="footer-info">
+                    <div>
+                        <h4>Condições de Pagamento</h4>
+                        <p>${config.orcamento?.condicoesPagamento || '30 dias após entrega'}</p>
+                        
+                        <h4>Prazo de Entrega</h4>
+                        <p>${config.orcamento?.prazoEntrega || '15 dias úteis'}</p>
+                    </div>
+                    <div>
+                        <h4>Validade da Proposta</h4>
+                        <p>${validadeDias} dias</p>
+                        
+                        <h4>Contato</h4>
+                        <p>${config.representante?.telefone || 'Não informado'}</p>
+                        <p>${config.representante?.email || 'Não informado'}</p>
+                    </div>
+                </div>
+                
+                ${(document.getElementById('orcamentoObservacoes').value || config.orcamento?.observacoesPadrao) ? `
+                    <div class="observations">
+                        <h4>Observações</h4>
+                        <p>${document.getElementById('orcamentoObservacoes').value || config.orcamento?.observacoesPadrao || ''}</p>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    gerarPDF() {
+        const cliente = document.getElementById('orcamentoCliente').value;
+        if (!cliente || this.currentOrcamentoItems.length === 0) {
+            this.showNotification('Configure o cliente e adicione itens ao orçamento!', 'error');
+            return;
+        }
+
+        this.createPDF();
+    }
+
+    gerarPDFFromPreview() {
+        this.createPDF();
+        window.closeModal('previewModal');
+    }
+
+    createPDF() {
+        // Check if jsPDF is available
+        if (typeof window.jspdf === 'undefined') {
+            this.showNotification('Biblioteca jsPDF não carregada. Recarregue a página.', 'error');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        
+        const cliente = this.data.clientes.find(c => c.nome === document.getElementById('orcamentoCliente').value);
+        const config = this.data.configuracoes;
+        
+        const dataOrcamento = new Date(document.getElementById('orcamentoData').value);
+        const validadeDias = config.orcamento?.validadeOrcamento || 30;
+        const dataValidade = new Date(dataOrcamento);
+        dataValidade.setDate(dataValidade.getDate() + validadeDias);
+
+        const subtotal = this.calculateOrcamentoSubtotal();
+        const descontoTotal = this.calculateOrcamentoDesconto();
+        const total = subtotal - descontoTotal;
+        
+        const numeroOrcamento = `ORÇ-2025-${String(this.nextOrcamentoNumber).padStart(3, '0')}`;
+
+        // Define colors
+        const primaryColor = [31, 128, 141]; // Teal
+        const textColor = [51, 51, 51];
+        const lightGray = [245, 245, 245];
+        
+        let yPosition = 20;
+
+        // Header - Company Info
+        pdf.setFontSize(24);
+        pdf.setTextColor(...primaryColor);
+        pdf.setFont(undefined, 'bold');
+        pdf.text(config.representante?.nome || 'Representação Comercial', 20, yPosition);
+        
+        yPosition += 10;
+        pdf.setFontSize(10);
+        pdf.setTextColor(...textColor);
+        pdf.setFont(undefined, 'normal');
+        
+        if (config.representante?.cnpj) {
+            pdf.text(`CNPJ: ${config.representante.cnpj}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (config.representante?.endereco) {
+            pdf.text(`${config.representante.endereco}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (config.representante?.telefone) {
+            pdf.text(`Tel: ${config.representante.telefone}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (config.representante?.email) {
+            pdf.text(`Email: ${config.representante.email}`, 20, yPosition);
+            yPosition += 5;
+        }
+
+        // Orçamento Info - Right side
+        pdf.setFontSize(18);
+        pdf.setTextColor(...primaryColor);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('ORÇAMENTO', 140, 30);
+        
+        pdf.setFontSize(10);
+        pdf.setTextColor(...textColor);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`Número: ${numeroOrcamento}`, 140, 40);
+        pdf.text(`Data: ${this.formatDate(document.getElementById('orcamentoData').value)}`, 140, 45);
+        pdf.text(`Validade: ${this.formatDate(this.formatDateForInput(dataValidade))}`, 140, 50);
+
+        // Line separator
+        yPosition = 60;
+        pdf.setDrawColor(...primaryColor);
+        pdf.setLineWidth(0.5);
+        pdf.line(20, yPosition, 190, yPosition);
+
+        // Client Info
+        yPosition += 10;
+        pdf.setFontSize(12);
+        pdf.setTextColor(...primaryColor);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('DADOS DO CLIENTE', 20, yPosition);
+        
+        yPosition += 8;
+        pdf.setFontSize(10);
+        pdf.setTextColor(...textColor);
+        pdf.setFont(undefined, 'normal');
+        
+        if (cliente?.nome) {
+            pdf.text(`Razão Social: ${cliente.nome}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (cliente?.cnpj) {
+            pdf.text(`CNPJ/CPF: ${cliente.cnpj}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (cliente?.endereco) {
+            pdf.text(`Endereço: ${cliente.endereco}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (cliente?.telefone) {
+            pdf.text(`Telefone: ${cliente.telefone}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (cliente?.email) {
+            pdf.text(`Email: ${cliente.email}`, 20, yPosition);
+            yPosition += 5;
+        }
+        if (cliente?.contato) {
+            pdf.text(`Contato: ${cliente.contato}`, 20, yPosition);
+            yPosition += 5;
+        }
+
+        // Items Table
+        yPosition += 10;
+        pdf.setFontSize(12);
+        pdf.setTextColor(...primaryColor);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('ITENS DO ORÇAMENTO', 20, yPosition);
+        
+        yPosition += 10;
+        
+        // Table header
+        const tableHeaders = ['Código', 'Descrição', 'Qtd', 'Preço Unit.', 'Desc.', 'Total'];
+        const colWidths = [20, 70, 15, 25, 15, 25];
+        let xPosition = 20;
+        
+        pdf.setFillColor(...lightGray);
+        pdf.rect(xPosition, yPosition - 5, 170, 8, 'F');
+        
+        pdf.setFontSize(9);
+        pdf.setTextColor(...textColor);
+        pdf.setFont(undefined, 'bold');
+        
+        tableHeaders.forEach((header, index) => {
+            pdf.text(header, xPosition + 2, yPosition);
+            xPosition += colWidths[index];
+        });
+        
+        yPosition += 8;
+        
+        // Table rows
+        pdf.setFont(undefined, 'normal');
+        this.currentOrcamentoItems.forEach(item => {
+            if (yPosition > 250) { // New page if needed
+                pdf.addPage();
+                yPosition = 20;
+            }
+            
+            xPosition = 20;
+            const subtotalItem = item.precoUnitario * item.quantidade;
+            const descontoValor = subtotalItem * (item.desconto / 100);
+            const totalItem = subtotalItem - descontoValor;
+            
+            const rowData = [
+                item.codigo,
+                item.produto.substring(0, 35), // Truncate long descriptions
+                item.quantidade.toString(),
+                `R$ ${this.formatCurrency(item.precoUnitario)}`,
+                `${item.desconto}%`,
+                `R$ ${this.formatCurrency(totalItem)}`
+            ];
+            
+            rowData.forEach((data, index) => {
+                if (index === 5) { // Right align total
+                    pdf.text(data, xPosition + colWidths[index] - 2, yPosition, { align: 'right' });
+                } else {
+                    pdf.text(data, xPosition + 2, yPosition);
+                }
+                xPosition += colWidths[index];
+            });
+            
+            yPosition += 6;
+        });
+
+        // Totals
+        yPosition += 10;
+        const totalsX = 140;
+        
+        pdf.setFont(undefined, 'normal');
+        pdf.text('Subtotal:', totalsX, yPosition);
+        pdf.text(`R$ ${this.formatCurrency(subtotal)}`, totalsX + 50, yPosition, { align: 'right' });
+        
+        yPosition += 6;
+        pdf.text('Desconto Total:', totalsX, yPosition);
+        pdf.text(`R$ ${this.formatCurrency(descontoTotal)}`, totalsX + 50, yPosition, { align: 'right' });
+        
+        yPosition += 8;
+        pdf.setFont(undefined, 'bold');
+        pdf.setTextColor(...primaryColor);
+        pdf.text('TOTAL GERAL:', totalsX, yPosition);
+        pdf.text(`R$ ${this.formatCurrency(total)}`, totalsX + 50, yPosition, { align: 'right' });
+
+        // Footer
+        yPosition += 15;
+        if (yPosition > 240) {
+            pdf.addPage();
+            yPosition = 20;
+        }
+        
+        pdf.setDrawColor(...primaryColor);
+        pdf.line(20, yPosition, 190, yPosition);
+        
+        yPosition += 10;
+        pdf.setFontSize(10);
+        pdf.setTextColor(...textColor);
+        pdf.setFont(undefined, 'bold');
+        
+        // Two columns for conditions
+        pdf.text('Condições de Pagamento:', 20, yPosition);
+        pdf.text('Prazo de Entrega:', 110, yPosition);
+        
+        yPosition += 6;
+        pdf.setFont(undefined, 'normal');
+        pdf.text(config.orcamento?.condicoesPagamento || '30 dias após entrega', 20, yPosition);
+        pdf.text(config.orcamento?.prazoEntrega || '15 dias úteis', 110, yPosition);
+        
+        yPosition += 8;
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Validade da Proposta:', 20, yPosition);
+        pdf.text('Contato:', 110, yPosition);
+        
+        yPosition += 6;
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`${validadeDias} dias`, 20, yPosition);
+        pdf.text(`${config.representante?.telefone || 'N/A'} - ${config.representante?.email || 'N/A'}`, 110, yPosition);
+
+        // Observations
+        const observacoes = document.getElementById('orcamentoObservacoes').value || config.orcamento?.observacoesPadrao;
+        if (observacoes) {
+            yPosition += 10;
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Observações:', 20, yPosition);
+            
+            yPosition += 6;
+            pdf.setFont(undefined, 'normal');
+            const splitObservacoes = pdf.splitTextToSize(observacoes, 170);
+            pdf.text(splitObservacoes, 20, yPosition);
+        }
+
+        // Save PDF
+        const clienteNome = cliente?.nome?.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_') || 'Cliente';
+        const fileName = `Orcamento_${numeroOrcamento}_${clienteNome}.pdf`;
+        
+        pdf.save(fileName);
+        this.showNotification('PDF gerado com sucesso!', 'success');
     }
 
     // CRUD Operations - Visitas
@@ -742,7 +1323,7 @@ class SGC {
         document.getElementById('visitaData').value = visita.data;
         document.getElementById('visitaHorario').value = visita.horario;
         document.getElementById('visitaStatus').value = visita.status;
-        document.getElementById('visitaObservacoes').value = visita.observacoes;
+        document.getElementById('visitaObservacoes').value = visita.observacoes || '';
 
         document.getElementById('visitaModalTitle').textContent = 'Editar Visita';
         window.openModal('visitaModal');
@@ -756,6 +1337,72 @@ class SGC {
             this.renderProximasVisitas();
             this.showNotification('Visita excluída com sucesso!', 'success');
         }
+    }
+
+    // Configuration Functions
+    loadConfigurations() {
+        const config = this.data.configuracoes;
+        
+        // Representante config
+        const nomeEmpresa = document.getElementById('configNomeEmpresa');
+        const cnpj = document.getElementById('configCnpj');
+        const endereco = document.getElementById('configEndereco');
+        const telefone = document.getElementById('configTelefone');
+        const email = document.getElementById('configEmail');
+        
+        if (config.representante) {
+            if (nomeEmpresa) nomeEmpresa.value = config.representante.nome || '';
+            if (cnpj) cnpj.value = config.representante.cnpj || '';
+            if (endereco) endereco.value = config.representante.endereco || '';
+            if (telefone) telefone.value = config.representante.telefone || '';
+            if (email) email.value = config.representante.email || '';
+        }
+
+        // Orcamento config
+        const condicoesPagamento = document.getElementById('configCondicoesPagamento');
+        const prazoEntrega = document.getElementById('configPrazoEntrega');
+        const validadeOrcamento = document.getElementById('configValidadeOrcamento');
+        const observacoesPadrao = document.getElementById('configObservacoesPadrao');
+        
+        if (config.orcamento) {
+            if (condicoesPagamento) condicoesPagamento.value = config.orcamento.condicoesPagamento || '';
+            if (prazoEntrega) prazoEntrega.value = config.orcamento.prazoEntrega || '';
+            if (validadeOrcamento) validadeOrcamento.value = config.orcamento.validadeOrcamento || 30;
+            if (observacoesPadrao) observacoesPadrao.value = config.orcamento.observacoesPadrao || '';
+        }
+    }
+
+    saveConfigRepresentante() {
+        if (!this.data.configuracoes.representante) {
+            this.data.configuracoes.representante = {};
+        }
+
+        this.data.configuracoes.representante = {
+            nome: document.getElementById('configNomeEmpresa').value,
+            cnpj: document.getElementById('configCnpj').value,
+            endereco: document.getElementById('configEndereco').value,
+            telefone: document.getElementById('configTelefone').value,
+            email: document.getElementById('configEmail').value
+        };
+
+        this.saveData();
+        this.showNotification('Dados do representante salvos com sucesso!', 'success');
+    }
+
+    saveConfigOrcamento() {
+        if (!this.data.configuracoes.orcamento) {
+            this.data.configuracoes.orcamento = {};
+        }
+
+        this.data.configuracoes.orcamento = {
+            condicoesPagamento: document.getElementById('configCondicoesPagamento').value,
+            prazoEntrega: document.getElementById('configPrazoEntrega').value,
+            validadeOrcamento: parseInt(document.getElementById('configValidadeOrcamento').value) || 30,
+            observacoesPadrao: document.getElementById('configObservacoesPadrao').value
+        };
+
+        this.saveData();
+        this.showNotification('Configurações de orçamento salvas com sucesso!', 'success');
     }
 
     // Rendering Functions
@@ -772,30 +1419,30 @@ class SGC {
         const mesAtual = hoje.getMonth();
         const anoAtual = hoje.getFullYear();
 
-        // Calculate current month sales
-        const vendasMes = this.data.pedidos
-            .filter(p => {
-                const dataPedido = new Date(p.data);
-                return dataPedido.getMonth() === mesAtual && 
-                       dataPedido.getFullYear() === anoAtual &&
-                       p.status !== 'cancelado';
+        // Calculate current month sales from approved budgets
+        const vendasMes = this.data.orcamentos
+            .filter(o => {
+                const dataOrcamento = new Date(o.data);
+                return dataOrcamento.getMonth() === mesAtual && 
+                       dataOrcamento.getFullYear() === anoAtual &&
+                       o.status === 'aprovado';
             })
-            .reduce((total, p) => total + p.total, 0);
+            .reduce((total, o) => total + o.total, 0);
 
-        // Count pending orders
-        const pedidosPendentes = this.data.pedidos.filter(p => p.status === 'pendente').length;
+        // Count pending budgets
+        const orcamentosPendentes = this.data.orcamentos.filter(o => o.status === 'rascunho' || o.status === 'enviado').length;
 
         // Count active clients
         const clientesAtivos = this.data.clientes.filter(c => c.status === 'ativo').length;
 
         // Calculate commission to receive
-        const comissaoAReceber = this.data.pedidos
-            .filter(p => p.status === 'aprovado' || p.status === 'faturado')
-            .reduce((total, p) => total + p.comissao, 0);
+        const comissaoAReceber = this.data.orcamentos
+            .filter(o => o.status === 'aprovado')
+            .reduce((total, o) => total + o.comissao, 0);
 
         this.data.metricas = {
             vendasMes,
-            pedidosPendentes,
+            orcamentosPendentes,
             clientesAtivos,
             comissaoAReceber,
             metaMensal: 50000.00
@@ -806,12 +1453,12 @@ class SGC {
 
     renderMetricCards() {
         const vendasMesEl = document.getElementById('vendasMes');
-        const pedidosPendentesEl = document.getElementById('pedidosPendentes');
+        const orcamentosPendentesEl = document.getElementById('orcamentosPendentes');
         const clientesAtivosEl = document.getElementById('clientesAtivos');
         const comissaoAReceberEl = document.getElementById('comissaoAReceber');
 
         if (vendasMesEl) vendasMesEl.textContent = `R$ ${this.formatCurrency(this.data.metricas.vendasMes)}`;
-        if (pedidosPendentesEl) pedidosPendentesEl.textContent = this.data.metricas.pedidosPendentes;
+        if (orcamentosPendentesEl) orcamentosPendentesEl.textContent = this.data.metricas.orcamentosPendentes;
         if (clientesAtivosEl) clientesAtivosEl.textContent = this.data.metricas.clientesAtivos;
         if (comissaoAReceberEl) comissaoAReceberEl.textContent = `R$ ${this.formatCurrency(this.data.metricas.comissaoAReceber)}`;
     }
@@ -833,14 +1480,14 @@ class SGC {
             const data_mes = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
             labels.push(data_mes.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }));
             
-            const vendas = this.data.pedidos
-                .filter(p => {
-                    const dataPedido = new Date(p.data);
-                    return dataPedido.getMonth() === data_mes.getMonth() &&
-                           dataPedido.getFullYear() === data_mes.getFullYear() &&
-                           p.status !== 'cancelado';
+            const vendas = this.data.orcamentos
+                .filter(o => {
+                    const dataOrcamento = new Date(o.data);
+                    return dataOrcamento.getMonth() === data_mes.getMonth() &&
+                           dataOrcamento.getFullYear() === data_mes.getFullYear() &&
+                           o.status === 'aprovado';
                 })
-                .reduce((total, p) => total + p.total, 0);
+                .reduce((total, o) => total + o.total, 0);
             
             data.push(vendas);
         }
@@ -906,6 +1553,21 @@ class SGC {
             }
         });
 
+        // Check for expired budgets
+        this.data.orcamentos.forEach(orcamento => {
+            const hoje = new Date();
+            const dataValidade = new Date(orcamento.validade);
+            if (dataValidade < hoje && orcamento.status === 'enviado') {
+                const alert = document.createElement('div');
+                alert.className = 'alert-item error';
+                alert.innerHTML = `
+                    <strong>Orçamento Expirado:</strong><br>
+                    ${orcamento.numero} - ${orcamento.cliente}
+                `;
+                alertsList.appendChild(alert);
+            }
+        });
+
         // Check for low stock
         this.data.produtos.forEach(produto => {
             if (produto.estoque < 10) {
@@ -956,7 +1618,7 @@ class SGC {
         this.renderClientesTable();
         this.renderRepresentadasTable();
         this.renderProdutosTable();
-        this.renderPedidosTable();
+        this.renderOrcamentosTable();
         this.populateSelects();
     }
 
@@ -1032,28 +1694,57 @@ class SGC {
         });
     }
 
-    renderPedidosTable() {
-        const tbody = document.getElementById('pedidosTableBody');
+    renderOrcamentosTable() {
+        const tbody = document.getElementById('orcamentosTableBody');
         if (!tbody) return;
         
         tbody.innerHTML = '';
 
-        this.data.pedidos.forEach(pedido => {
+        this.data.orcamentos.forEach(orcamento => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>#${pedido.id}</td>
-                <td>${pedido.cliente}</td>
-                <td>${this.formatDate(pedido.data)}</td>
-                <td><span class="status-badge ${pedido.status}">${pedido.status}</span></td>
-                <td>R$ ${this.formatCurrency(pedido.total)}</td>
-                <td>R$ ${this.formatCurrency(pedido.comissao)}</td>
+                <td>${orcamento.numero}</td>
+                <td>${orcamento.cliente}</td>
+                <td>${this.formatDate(orcamento.data)}</td>
+                <td>${this.formatDate(orcamento.validade)}</td>
+                <td><span class="status-badge ${orcamento.status}">${orcamento.status}</span></td>
+                <td>R$ ${this.formatCurrency(orcamento.total)}</td>
+                <td>R$ ${this.formatCurrency(orcamento.comissao)}</td>
                 <td class="action-buttons">
-                    <button class="btn-sm btn-edit" onclick="sgc.editPedido(${pedido.id})">Editar</button>
-                    <button class="btn-sm btn-delete" onclick="sgc.deletePedido(${pedido.id})">Excluir</button>
+                    <button class="btn-sm btn-edit" onclick="sgc.editOrcamento(${orcamento.id})">Editar</button>
+                    <button class="btn-sm btn-pdf" onclick="sgc.gerarPDFOrcamento(${orcamento.id})">📄 PDF</button>
+                    <button class="btn-sm btn-delete" onclick="sgc.deleteOrcamento(${orcamento.id})">Excluir</button>
                 </td>
             `;
             tbody.appendChild(row);
         });
+    }
+
+    gerarPDFOrcamento(id) {
+        const orcamento = this.data.orcamentos.find(o => o.id == id);
+        if (!orcamento) return;
+
+        // Temporarily set current items for PDF generation
+        this.currentOrcamentoItems = [...orcamento.itens];
+        
+        // Set form values
+        const clienteEl = document.getElementById('orcamentoCliente');
+        const dataEl = document.getElementById('orcamentoData');
+        const obsEl = document.getElementById('orcamentoObservacoes');
+        
+        if (clienteEl) clienteEl.value = orcamento.cliente;
+        if (dataEl) dataEl.value = orcamento.data;
+        if (obsEl) obsEl.value = orcamento.observacoes || '';
+        
+        // Override the next number for existing budget
+        const originalNext = this.nextOrcamentoNumber;
+        this.nextOrcamentoNumber = parseInt(orcamento.numero.split('-')[2]);
+        
+        this.createPDF();
+        
+        // Restore original
+        this.nextOrcamentoNumber = originalNext;
+        this.currentOrcamentoItems = [];
     }
 
     // Populate Selects
@@ -1064,7 +1755,7 @@ class SGC {
     }
 
     populateClienteSelects() {
-        const selects = ['pedidoCliente', 'visitaCliente'];
+        const selects = ['orcamentoCliente', 'visitaCliente'];
         selects.forEach(selectId => {
             const select = document.getElementById(selectId);
             if (select) {
@@ -1214,7 +1905,8 @@ class SGC {
             });
 
             dayElement.onclick = () => {
-                document.getElementById('visitaData').value = dateString;
+                const visitaDataEl = document.getElementById('visitaData');
+                if (visitaDataEl) visitaDataEl.value = dateString;
                 window.openModal('visitaModal');
             };
 
@@ -1280,7 +1972,15 @@ class SGC {
             const data_mes = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
             labels.push(data_mes.toLocaleDateString('pt-BR', { month: 'short' }));
             
-            const vendas = Math.random() * 30000 + 10000; // Sample data
+            const vendas = this.data.orcamentos
+                .filter(o => {
+                    const dataOrcamento = new Date(o.data);
+                    return dataOrcamento.getMonth() === data_mes.getMonth() &&
+                           dataOrcamento.getFullYear() === data_mes.getFullYear() &&
+                           o.status === 'aprovado';
+                })
+                .reduce((total, o) => total + o.total, 0);
+            
             data.push(vendas);
         }
 
@@ -1325,12 +2025,14 @@ class SGC {
             this.charts.topProdutos.destroy();
         }
 
-        // Get top products from orders
+        // Get top products from budgets
         const produtoVendas = {};
-        this.data.pedidos.forEach(pedido => {
-            pedido.itens.forEach(item => {
-                produtoVendas[item.produto] = (produtoVendas[item.produto] || 0) + (item.quantidade * item.preco);
-            });
+        this.data.orcamentos.forEach(orcamento => {
+            if (orcamento.status === 'aprovado') {
+                orcamento.itens.forEach(item => {
+                    produtoVendas[item.produto] = (produtoVendas[item.produto] || 0) + (item.quantidade * item.precoUnitario);
+                });
+            }
         });
 
         const sortedProducts = Object.entries(produtoVendas)
@@ -1371,17 +2073,19 @@ class SGC {
 
         // Calculate commissions by representative
         const comissoesPorRep = {};
-        this.data.pedidos.forEach(pedido => {
-            pedido.itens.forEach(item => {
-                const produto = this.data.produtos.find(p => p.descricao === item.produto);
-                if (produto) {
-                    const representada = this.data.representadas.find(r => r.nome === produto.representada);
-                    if (representada) {
-                        const comissao = item.preco * item.quantidade * (representada.comissao / 100);
-                        comissoesPorRep[representada.nome] = (comissoesPorRep[representada.nome] || 0) + comissao;
+        this.data.orcamentos.forEach(orcamento => {
+            if (orcamento.status === 'aprovado') {
+                orcamento.itens.forEach(item => {
+                    const produto = this.data.produtos.find(p => p.descricao === item.produto);
+                    if (produto) {
+                        const representada = this.data.representadas.find(r => r.nome === produto.representada);
+                        if (representada) {
+                            const comissao = item.precoUnitario * item.quantidade * (representada.comissao / 100);
+                            comissoesPorRep[representada.nome] = (comissoesPorRep[representada.nome] || 0) + comissao;
+                        }
                     }
-                }
-            });
+                });
+            }
         });
 
         const labels = Object.keys(comissoesPorRep);
@@ -1481,18 +2185,18 @@ class SGC {
             });
         }
 
-        // Pedido filters
-        const searchPedidos = document.getElementById('searchPedidos');
-        if (searchPedidos) {
-            searchPedidos.addEventListener('input', (e) => {
-                this.filterTable('pedidosTableBody', e.target.value, 1); // Cliente
+        // Orçamento filters
+        const searchOrcamentos = document.getElementById('searchOrcamentos');
+        if (searchOrcamentos) {
+            searchOrcamentos.addEventListener('input', (e) => {
+                this.filterTable('orcamentosTableBody', e.target.value, [0, 1]); // Number and Client
             });
         }
 
-        const filterStatusPedido = document.getElementById('filterStatusPedido');
-        if (filterStatusPedido) {
-            filterStatusPedido.addEventListener('change', (e) => {
-                this.filterTable('pedidosTableBody', e.target.value, 3, true);
+        const filterStatusOrcamento = document.getElementById('filterStatusOrcamento');
+        if (filterStatusOrcamento) {
+            filterStatusOrcamento.addEventListener('change', (e) => {
+                this.filterTable('orcamentosTableBody', e.target.value, 4, true);
             });
         }
     }
@@ -1573,18 +2277,54 @@ window.gerarRelatorioVendas = function() {
     const dataFim = document.getElementById('dataFim');
     
     if (!dataInicio?.value || !dataFim?.value) {
-        sgc.showNotification('Selecione as datas de início e fim', 'error');
+        if (window.sgc) {
+            window.sgc.showNotification('Selecione as datas de início e fim', 'error');
+        }
         return;
     }
     
-    sgc.showNotification('Relatório gerado com sucesso!', 'success');
+    if (window.sgc) {
+        window.sgc.showNotification('Relatório gerado com sucesso!', 'success');
+    }
 };
 
 // Initialize the system
 let sgc;
-document.addEventListener('DOMContentLoaded', () => {
-    sgc = new SGC();
-    
-    // Make sgc available globally for onclick handlers
-    window.sgc = sgc;
+
+// Multiple initialization approaches to ensure it works
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM loaded, initializing SGC...');
+    try {
+        sgc = new SGC();
+        await sgc.init();
+        
+        // Make sgc available globally for onclick handlers
+        window.sgc = sgc;
+        
+        console.log('SGC successfully initialized and available globally');
+    } catch (error) {
+        console.error('Error initializing SGC:', error);
+    }
 });
+
+// Fallback initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!sgc) {
+            console.log('Fallback initialization...');
+            sgc = new SGC();
+            await sgc.init();
+            window.sgc = sgc;
+        }
+    });
+} else {
+    // DOM already loaded
+    setTimeout(async () => {
+        if (!sgc) {
+            console.log('Immediate initialization...');
+            sgc = new SGC();
+            await sgc.init();
+            window.sgc = sgc;
+        }
+    }, 100);
+}

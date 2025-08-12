@@ -1067,13 +1067,13 @@ select.form-control {
     border: 1px solid rgba(var(--color-warning-rgb), 0.25);
 }
 
-.status-badge.pendente {
+.status-badge.pendente, .status-badge.rascunho {
     background: rgba(var(--color-warning-rgb), 0.15);
     color: var(--color-warning);
     border: 1px solid rgba(var(--color-warning-rgb), 0.25);
 }
 
-.status-badge.aprovado {
+.status-badge.aprovado, .status-badge.enviado {
     background: rgba(var(--color-success-rgb), 0.15);
     color: var(--color-success);
     border: 1px solid rgba(var(--color-success-rgb), 0.25);
@@ -1085,7 +1085,7 @@ select.form-control {
     border: 1px solid rgba(var(--color-info-rgb), 0.25);
 }
 
-.status-badge.cancelado {
+.status-badge.cancelado, .status-badge.rejeitado, .status-badge.expirado {
     background: rgba(var(--color-error-rgb), 0.15);
     color: var(--color-error);
     border: 1px solid rgba(var(--color-error-rgb), 0.25);
@@ -1108,6 +1108,7 @@ select.form-control {
     display: flex;
     gap: var(--space-8);
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .btn-sm {
@@ -1138,6 +1139,26 @@ select.form-control {
     background: rgba(var(--color-error-rgb), 0.25);
 }
 
+.btn-pdf {
+    background: var(--color-bg-4);
+    color: var(--color-error);
+    border: 1px solid rgba(var(--color-error-rgb), 0.25);
+}
+
+.btn-pdf:hover {
+    background: rgba(var(--color-error-rgb), 0.15);
+}
+
+.btn-print {
+    background: var(--color-bg-1);
+    color: var(--color-info);
+    border: 1px solid rgba(var(--color-info-rgb), 0.25);
+}
+
+.btn-print:hover {
+    background: rgba(var(--color-info-rgb), 0.15);
+}
+
 /* Modals */
 .modal {
     position: fixed;
@@ -1155,6 +1176,11 @@ select.form-control {
 
 .modal.hidden {
     display: none;
+}
+
+.modal--large .modal-content {
+    max-width: 900px;
+    width: 100%;
 }
 
 .modal-content {
@@ -1206,6 +1232,7 @@ select.form-control {
     gap: var(--space-12);
     padding: var(--space-20);
     border-top: 1px solid var(--color-card-border-inner);
+    flex-wrap: wrap;
 }
 
 /* Form Rows */
@@ -1220,12 +1247,12 @@ select.form-control {
     flex: 1;
 }
 
-/* Pedido Items */
-.pedido-items {
+/* Orçamento Items */
+.orcamento-items {
     margin-top: var(--space-20);
 }
 
-.pedido-items h4 {
+.orcamento-items h4 {
     margin-bottom: var(--space-16);
     color: var(--color-text);
 }
@@ -1234,7 +1261,7 @@ select.form-control {
     margin: var(--space-16) 0;
 }
 
-.pedido-totals {
+.orcamento-totals {
     background: var(--color-bg-1);
     padding: var(--space-16);
     border-radius: var(--radius-base);
@@ -1251,6 +1278,9 @@ select.form-control {
 .total-row:last-child {
     margin-bottom: 0;
     font-size: var(--font-size-lg);
+    color: var(--color-primary);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-8);
 }
 
 /* Calendar */
@@ -1389,6 +1419,163 @@ select.form-control {
     color: var(--color-text);
 }
 
+/* Configurações */
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--space-24);
+}
+
+/* Orçamento Preview */
+.orcamento-preview {
+    background: var(--color-surface);
+    padding: var(--space-32);
+    font-family: var(--font-family-base);
+    color: var(--color-text);
+    line-height: 1.4;
+}
+
+.orcamento-preview .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-24);
+    padding-bottom: var(--space-16);
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.orcamento-preview .company-info h1 {
+    color: var(--color-primary);
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-8);
+}
+
+.orcamento-preview .company-info p {
+    margin: var(--space-2) 0;
+    font-size: var(--font-size-sm);
+}
+
+.orcamento-preview .orcamento-info {
+    text-align: right;
+}
+
+.orcamento-preview .orcamento-info h2 {
+    color: var(--color-primary);
+    margin-bottom: var(--space-8);
+}
+
+.orcamento-preview .client-section {
+    margin-bottom: var(--space-24);
+}
+
+.orcamento-preview .client-section h3 {
+    color: var(--color-primary);
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.orcamento-preview .items-section {
+    margin-bottom: var(--space-24);
+}
+
+.orcamento-preview .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-16);
+}
+
+.orcamento-preview .items-table th {
+    background: var(--color-bg-1);
+    padding: var(--space-12);
+    text-align: left;
+    border: 1px solid var(--color-border);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+}
+
+.orcamento-preview .items-table td {
+    padding: var(--space-10);
+    border: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+}
+
+.orcamento-preview .items-table .text-right {
+    text-align: right;
+}
+
+.orcamento-preview .totals-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-24);
+}
+
+.orcamento-preview .totals-table {
+    width: 300px;
+    border-collapse: collapse;
+}
+
+.orcamento-preview .totals-table td {
+    padding: var(--space-8) var(--space-12);
+    border: 1px solid var(--color-border);
+}
+
+.orcamento-preview .totals-table .total-final {
+    background: var(--color-bg-1);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.orcamento-preview .footer-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-16);
+}
+
+.orcamento-preview .footer-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-24);
+    margin-bottom: var(--space-16);
+}
+
+.orcamento-preview .footer-info h4 {
+    color: var(--color-primary);
+    margin-bottom: var(--space-8);
+    font-size: var(--font-size-base);
+}
+
+.orcamento-preview .observations {
+    background: var(--color-bg-1);
+    padding: var(--space-16);
+    border-radius: var(--radius-base);
+    border-left: 4px solid var(--color-primary);
+}
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    .orcamento-preview, .orcamento-preview * {
+        visibility: visible;
+    }
+    
+    .orcamento-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white;
+        color: black;
+        padding: 20px;
+    }
+    
+    .modal-footer {
+        display: none !important;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-desktop {
@@ -1449,7 +1636,11 @@ select.form-control {
         max-width: 95vw;
     }
 
-    .reports-grid {
+    .modal--large .modal-content {
+        max-width: 95vw;
+    }
+
+    .reports-grid, .config-grid {
         grid-template-columns: 1fr;
     }
 
@@ -1460,6 +1651,51 @@ select.form-control {
     .calendar-day {
         min-height: 60px;
         padding: var(--space-8);
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        gap: var(--space-8);
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-4);
+    }
+
+    .action-buttons .btn-sm {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .orcamento-preview .header-section {
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .orcamento-preview .orcamento-info {
+        text-align: left;
+        margin-top: var(--space-16);
+    }
+
+    .orcamento-preview .footer-info {
+        grid-template-columns: 1fr;
+        gap: var(--space-16);
+    }
+
+    .orcamento-preview .totals-section {
+        justify-content: center;
+    }
+
+    .orcamento-preview .totals-table {
+        width: 100%;
+        max-width: 300px;
     }
 }
 
@@ -1479,6 +1715,16 @@ select.form-control {
     .data-table th,
     .data-table td {
         padding: var(--space-8) var(--space-12);
+    }
+
+    .orcamento-preview {
+        padding: var(--space-16);
+    }
+
+    .orcamento-preview .items-table th,
+    .orcamento-preview .items-table td {
+        padding: var(--space-6);
+        font-size: var(--font-size-xs);
     }
 }
 

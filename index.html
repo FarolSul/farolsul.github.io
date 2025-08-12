@@ -17,9 +17,10 @@
                     <button class="nav-item" data-section="clientes">Clientes</button>
                     <button class="nav-item" data-section="representadas">Representadas</button>
                     <button class="nav-item" data-section="produtos">Produtos</button>
-                    <button class="nav-item" data-section="pedidos">Pedidos</button>
+                    <button class="nav-item" data-section="orcamentos">Orçamentos</button>
                     <button class="nav-item" data-section="agenda">Agenda</button>
                     <button class="nav-item" data-section="relatorios">Relatórios</button>
+                    <button class="nav-item" data-section="configuracoes">Configurações</button>
                 </nav>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
             </div>
@@ -31,9 +32,10 @@
             <button class="nav-item" data-section="clientes">Clientes</button>
             <button class="nav-item" data-section="representadas">Representadas</button>
             <button class="nav-item" data-section="produtos">Produtos</button>
-            <button class="nav-item" data-section="pedidos">Pedidos</button>
+            <button class="nav-item" data-section="orcamentos">Orçamentos</button>
             <button class="nav-item" data-section="agenda">Agenda</button>
             <button class="nav-item" data-section="relatorios">Relatórios</button>
+            <button class="nav-item" data-section="configuracoes">Configurações</button>
         </nav>
 
         <main class="main-content">
@@ -50,8 +52,8 @@
                         <div class="metric-change positive">+15%</div>
                     </div>
                     <div class="metric-card">
-                        <h3>Pedidos Pendentes</h3>
-                        <div class="metric-value" id="pedidosPendentes">0</div>
+                        <h3>Orçamentos Pendentes</h3>
+                        <div class="metric-value" id="orcamentosPendentes">0</div>
                         <div class="metric-change neutral">Aguardando</div>
                     </div>
                     <div class="metric-card">
@@ -195,38 +197,40 @@
                 </div>
             </section>
 
-            <!-- Pedidos Section -->
-            <section id="pedidos" class="section">
+            <!-- Orçamentos Section -->
+            <section id="orcamentos" class="section">
                 <div class="section-header">
-                    <h2>Pedidos</h2>
-                    <button class="btn btn--primary" onclick="openModal('pedidoModal')">Novo Pedido</button>
+                    <h2>Orçamentos</h2>
+                    <button class="btn btn--primary" onclick="openModal('orcamentoModal')">Novo Orçamento</button>
                 </div>
                 
                 <div class="filters">
-                    <input type="text" placeholder="Buscar pedidos..." class="form-control" id="searchPedidos">
-                    <select class="form-control" id="filterStatusPedido">
+                    <input type="text" placeholder="Buscar orçamentos..." class="form-control" id="searchOrcamentos">
+                    <select class="form-control" id="filterStatusOrcamento">
                         <option value="">Todos os status</option>
-                        <option value="pendente">Pendente</option>
+                        <option value="rascunho">Rascunho</option>
+                        <option value="enviado">Enviado</option>
                         <option value="aprovado">Aprovado</option>
-                        <option value="faturado">Faturado</option>
-                        <option value="cancelado">Cancelado</option>
+                        <option value="rejeitado">Rejeitado</option>
+                        <option value="expirado">Expirado</option>
                     </select>
                 </div>
 
                 <div class="table-container">
-                    <table class="data-table" id="pedidosTable">
+                    <table class="data-table" id="orcamentosTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Número</th>
                                 <th>Cliente</th>
                                 <th>Data</th>
+                                <th>Validade</th>
                                 <th>Status</th>
                                 <th>Total</th>
                                 <th>Comissão</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="pedidosTableBody">
+                        <tbody id="orcamentosTableBody">
                             <!-- Dados serão inseridos via JavaScript -->
                         </tbody>
                     </table>
@@ -300,6 +304,69 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Configurações Section -->
+            <section id="configuracoes" class="section">
+                <div class="section-header">
+                    <h2>Configurações do Sistema</h2>
+                </div>
+                
+                <div class="config-grid">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Dados do Representante</h3>
+                            <form id="configRepresentanteForm">
+                                <div class="form-group">
+                                    <label class="form-label">Nome da Empresa</label>
+                                    <input type="text" class="form-control" id="configNomeEmpresa">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CNPJ</label>
+                                    <input type="text" class="form-control" id="configCnpj">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Endereço</label>
+                                    <input type="text" class="form-control" id="configEndereco">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="text" class="form-control" id="configTelefone">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="configEmail">
+                                </div>
+                                <button type="submit" class="btn btn--primary">Salvar Dados</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Configurações de Orçamento</h3>
+                            <form id="configOrcamentoForm">
+                                <div class="form-group">
+                                    <label class="form-label">Condições de Pagamento Padrão</label>
+                                    <textarea class="form-control" id="configCondicoesPagamento" rows="2"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Prazo de Entrega Padrão</label>
+                                    <input type="text" class="form-control" id="configPrazoEntrega">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Validade do Orçamento (dias)</label>
+                                    <input type="number" class="form-control" id="configValidadeOrcamento" value="30">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Observações Padrão</label>
+                                    <textarea class="form-control" id="configObservacoesPadrao" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn--primary">Salvar Configurações</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <!-- Modals -->
@@ -331,6 +398,10 @@
                     <div class="form-group">
                         <label class="form-label">Endereço</label>
                         <textarea class="form-control" id="clienteEndereco" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pessoa de Contato</label>
+                        <input type="text" class="form-control" id="clienteContato">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Status</label>
@@ -441,38 +512,42 @@
             </div>
         </div>
 
-        <!-- Pedido Modal -->
-        <div id="pedidoModal" class="modal hidden">
+        <!-- Orçamento Modal -->
+        <div id="orcamentoModal" class="modal modal--large hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 id="pedidoModalTitle">Novo Pedido</h3>
-                    <button class="modal-close" onclick="closeModal('pedidoModal')">&times;</button>
+                    <h3 id="orcamentoModalTitle">Novo Orçamento</h3>
+                    <button class="modal-close" onclick="closeModal('orcamentoModal')">&times;</button>
                 </div>
-                <form id="pedidoForm" class="modal-body">
-                    <input type="hidden" id="pedidoId">
-                    <div class="form-group">
-                        <label class="form-label">Cliente *</label>
-                        <select class="form-control" id="pedidoCliente" required>
-                            <option value="">Selecione...</option>
-                            <!-- Options serão inseridas via JavaScript -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Data *</label>
-                        <input type="date" class="form-control" id="pedidoData" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Status</label>
-                        <select class="form-control" id="pedidoStatus">
-                            <option value="pendente">Pendente</option>
-                            <option value="aprovado">Aprovado</option>
-                            <option value="faturado">Faturado</option>
-                            <option value="cancelado">Cancelado</option>
-                        </select>
+                <form id="orcamentoForm" class="modal-body">
+                    <input type="hidden" id="orcamentoId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Cliente *</label>
+                            <select class="form-control" id="orcamentoCliente" required>
+                                <option value="">Selecione...</option>
+                                <!-- Options serão inseridas via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data *</label>
+                            <input type="date" class="form-control" id="orcamentoData" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="orcamentoStatus">
+                                <option value="rascunho">Rascunho</option>
+                                <option value="enviado">Enviado</option>
+                                <option value="aprovado">Aprovado</option>
+                                <option value="rejeitado">Rejeitado</option>
+                                <option value="expirado">Expirado</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <div class="pedido-items">
-                        <h4>Itens do Pedido</h4>
+                    <div class="orcamento-items">
+                        <h4>Itens do Orçamento</h4>
                         <div class="add-item-form">
                             <div class="form-row">
                                 <select class="form-control" id="itemProduto">
@@ -481,7 +556,7 @@
                                 </select>
                                 <input type="number" class="form-control" id="itemQuantidade" placeholder="Qtd" min="1" value="1">
                                 <input type="number" class="form-control" id="itemDesconto" placeholder="Desc %" min="0" max="100" step="0.1" value="0">
-                                <button type="button" class="btn btn--primary" onclick="addItemToPedido()">Adicionar</button>
+                                <button type="button" class="btn btn--primary" onclick="addItemToOrcamento()">Adicionar</button>
                             </div>
                         </div>
                         
@@ -489,36 +564,47 @@
                             <table class="data-table">
                                 <thead>
                                     <tr>
+                                        <th>Código</th>
                                         <th>Produto</th>
-                                        <th>Quantidade</th>
+                                        <th>Qtd</th>
                                         <th>Preço Unit.</th>
-                                        <th>Desconto</th>
+                                        <th>Desc. %</th>
                                         <th>Total</th>
                                         <th>Ação</th>
                                     </tr>
                                 </thead>
-                                <tbody id="pedidoItensTableBody">
+                                <tbody id="orcamentoItensTableBody">
                                     <!-- Itens serão inseridos via JavaScript -->
                                 </tbody>
                             </table>
                         </div>
                         
-                        <div class="pedido-totals">
+                        <div class="orcamento-totals">
                             <div class="total-row">
-                                <strong>Subtotal: <span id="pedidoSubtotal">R$ 0,00</span></strong>
+                                <strong>Subtotal: <span id="orcamentoSubtotal">R$ 0,00</span></strong>
                             </div>
                             <div class="total-row">
-                                <strong>Comissão Total: <span id="pedidoComissaoTotal">R$ 0,00</span></strong>
+                                <strong>Desconto Total: <span id="orcamentoDescontoTotal">R$ 0,00</span></strong>
                             </div>
                             <div class="total-row">
-                                <strong>Total: <span id="pedidoTotal">R$ 0,00</span></strong>
+                                <strong>Comissão Total: <span id="orcamentoComissaoTotal">R$ 0,00</span></strong>
                             </div>
+                            <div class="total-row">
+                                <strong>Total Geral: <span id="orcamentoTotal">R$ 0,00</span></strong>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" id="orcamentoObservacoes" rows="3"></textarea>
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn--secondary" onclick="closeModal('pedidoModal')">Cancelar</button>
-                    <button type="submit" class="btn btn--primary" form="pedidoForm">Salvar Pedido</button>
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('orcamentoModal')">Cancelar</button>
+                    <button type="button" class="btn btn--outline" id="previewOrcamentoBtn" onclick="previewOrcamento()">📋 Preview</button>
+                    <button type="button" class="btn btn--outline" id="gerarPdfBtn" onclick="gerarPDF()">📄 Gerar PDF</button>
+                    <button type="submit" class="btn btn--primary" form="orcamentoForm">💾 Salvar Orçamento</button>
                 </div>
             </div>
         </div>
@@ -566,9 +652,30 @@
                 </div>
             </div>
         </div>
+
+        <!-- Preview Modal -->
+        <div id="previewModal" class="modal modal--large hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Preview do Orçamento</h3>
+                    <button class="modal-close" onclick="closeModal('previewModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="previewContent" class="orcamento-preview">
+                        <!-- Preview será gerado aqui -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" onclick="closeModal('previewModal')">Fechar</button>
+                    <button type="button" class="btn btn--outline" onclick="window.print()">🖨️ Imprimir</button>
+                    <button type="button" class="btn btn--primary" onclick="gerarPDFFromPreview()">📄 Gerar PDF</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
