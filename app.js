@@ -1,4 +1,4 @@
-// Sistema de Gestão Comercial - JavaScript
+// Sistema de Gestão Comercial v3 - JavaScript
 class SGC {
     constructor() {
         this.data = {
@@ -20,7 +20,7 @@ class SGC {
     async init() {
         if (this.initialized) return;
         
-        console.log('Starting SGC initialization...');
+        console.log('Starting SGC v3 initialization...');
         
         // Wait for DOM to be ready
         await this.waitForDOM();
@@ -37,8 +37,8 @@ class SGC {
         this.loadConfigurations();
         
         this.initialized = true;
-        console.log('SGC initialization completed');
-        this.showNotification('Sistema carregado com sucesso!', 'success');
+        console.log('SGC v3 initialization completed');
+        this.showNotification('Sistema v3 carregado com sucesso!', 'success');
     }
 
     waitForDOM() {
@@ -51,20 +51,21 @@ class SGC {
         });
     }
 
-    // Data Management
+    // Data Management with v3 updates
     loadData() {
-        const savedData = localStorage.getItem('sgc_data');
+        const savedData = localStorage.getItem('sgc_data_v3');
         if (savedData) {
             this.data = JSON.parse(savedData);
             this.nextOrcamentoNumber = this.data.orcamentos.length + 1;
         } else {
-            // Dados iniciais de exemplo
+            // Dados iniciais de exemplo com v3 updates
             this.data = {
                 clientes: [
                     {
                         id: 1,
                         nome: "TechSolutions Ltda",
                         cnpj: "12.345.678/0001-90",
+                        ie: "110042490",
                         telefone: "(11) 3456-7890",
                         email: "contato@techsolutions.com.br",
                         endereco: "Rua das Flores, 123 - São Paulo/SP",
@@ -78,6 +79,7 @@ class SGC {
                         id: 2,
                         nome: "Móveis & Design",
                         cnpj: "98.765.432/0001-12",
+                        ie: "234567890",
                         telefone: "(41) 2345-6789", 
                         email: "vendas@moveisedesign.com.br",
                         endereco: "Av. Batel, 456 - Curitiba/PR",
@@ -91,6 +93,7 @@ class SGC {
                         id: 3,
                         nome: "Ferramentas Sul",
                         cnpj: "55.666.777/0001-33",
+                        ie: "987654321",
                         telefone: "(51) 9876-5432",
                         email: "compras@ferramentassul.com.br",
                         endereco: "Rua Industrial, 789 - Porto Alegre/RS",
@@ -106,8 +109,11 @@ class SGC {
                         id: 1,
                         nome: "ElectronTech Brasil",
                         cnpj: "11.222.333/0001-44",
+                        inscricaoMunicipal: "1234567",
+                        endereco: "Av. Paulista, 1000 - São Paulo/SP",
                         telefone: "(11) 1234-5678",
                         email: "comercial@electrontech.com.br",
+                        logo: "logo-electrontech.png",
                         comissao: 8.5,
                         produtos: ["Notebooks", "Tablets", "Acessórios"]
                     },
@@ -115,8 +121,11 @@ class SGC {
                         id: 2,
                         nome: "MadeiraNobre Móveis",
                         cnpj: "44.555.666/0001-77",
+                        inscricaoMunicipal: "7654321",
+                        endereco: "Rua XV de Novembro, 500 - Curitiba/PR",
                         telefone: "(41) 8765-4321",
                         email: "vendas@madeiranobre.com.br",
+                        logo: "logo-madeiranobre.png",
                         comissao: 12.0,
                         produtos: ["Mesas", "Cadeiras", "Estantes"]
                     },
@@ -124,8 +133,11 @@ class SGC {
                         id: 3,
                         nome: "FerraBrasil Ltda",
                         cnpj: "77.888.999/0001-00",
+                        inscricaoMunicipal: "1122334",
+                        endereco: "Av. Industrial, 2000 - Porto Alegre/RS",
                         telefone: "(51) 5555-1234",
                         email: "representante@ferrabrasil.com.br",
+                        logo: "logo-ferrabrasil.png",
                         comissao: 10.0,
                         produtos: ["Furadeiras", "Parafusadeiras", "Serras"]
                     }
@@ -185,10 +197,11 @@ class SGC {
                 orcamentos: [
                     {
                         id: 1,
-                        numero: "ORÇ-2024-001",
+                        numero: "ORÇ-2025-001",
                         cliente: "TechSolutions Ltda",
-                        data: "2024-12-15",
-                        validade: "2025-01-14",
+                        representadaPrincipal: "ElectronTech Brasil",
+                        data: "2025-01-15",
+                        validade: "2025-02-14",
                         status: "enviado",
                         subtotal: 5000.00,
                         desconto: 0,
@@ -198,7 +211,8 @@ class SGC {
                         itens: [
                             {
                                 codigo: "NB001",
-                                produto: "Notebook ElectronTech Intel i7 16GB RAM 512GB SSD", 
+                                produto: "Notebook ElectronTech Intel i7 16GB RAM 512GB SSD",
+                                representada: "ElectronTech Brasil",
                                 quantidade: 2, 
                                 precoUnitario: 2500.00, 
                                 desconto: 0, 
@@ -211,7 +225,7 @@ class SGC {
                     {
                         id: 1,
                         cliente: "TechSolutions Ltda",
-                        data: "2024-12-20",
+                        data: "2025-08-20",
                         horario: "14:00",
                         status: "agendada",
                         observacoes: "Apresentar novos produtos e orçamento"
@@ -219,7 +233,7 @@ class SGC {
                     {
                         id: 2,
                         cliente: "Ferramentas Sul",
-                        data: "2024-12-18",
+                        data: "2025-08-18",
                         horario: "09:30",
                         status: "agendada",
                         observacoes: "Reativar cliente - oferta especial"
@@ -253,29 +267,22 @@ class SGC {
     }
 
     saveData() {
-        localStorage.setItem('sgc_data', JSON.stringify(this.data));
+        localStorage.setItem('sgc_data_v3', JSON.stringify(this.data));
     }
 
     // Navigation - Fixed implementation
     setupNavigation() {
         console.log('Setting up navigation...');
         
-        // Get all navigation items
         const navItems = document.querySelectorAll('.nav-item');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navMobile = document.getElementById('navMobile');
 
-        console.log('Found nav items:', navItems.length);
-
-        // Setup navigation event listeners
         navItems.forEach((item, index) => {
-            console.log(`Setting up nav item ${index}:`, item.getAttribute('data-section'));
-            
-            // Remove any existing listeners by cloning the node
+            // Clone to remove existing event listeners
             const newItem = item.cloneNode(true);
             item.parentNode.replaceChild(newItem, item);
             
-            // Add click event listener
             newItem.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -289,7 +296,6 @@ class SGC {
             });
         });
 
-        // Setup mobile menu
         if (mobileMenuBtn && navMobile) {
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -344,7 +350,6 @@ class SGC {
     }
 
     handleSectionSpecificLogic(sectionId) {
-        // Handle section-specific initialization
         switch(sectionId) {
             case 'agenda':
                 setTimeout(() => this.renderCalendar(), 100);
@@ -356,28 +361,33 @@ class SGC {
                 setTimeout(() => this.loadConfigurations(), 100);
                 break;
             case 'orcamentos':
-                // Ensure the budget table is rendered when navigating to budgets
                 setTimeout(() => this.renderOrcamentosTable(), 100);
                 break;
         }
     }
 
-    // Modals
+    // Modals - Fixed implementation
     setupModals() {
         console.log('Setting up modals...');
         
-        // Make functions globally available
+        // Make modal functions globally available
         window.openModal = (modalId) => {
             console.log('Opening modal:', modalId);
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.remove('hidden');
+                console.log('Modal opened successfully:', modalId);
+                
+                // Special setup for orçamento modal
                 if (modalId === 'orcamentoModal') {
                     this.setupOrcamentoModal();
                 }
+                
+                // Populate selects for all modals
                 this.populateSelects();
             } else {
                 console.error('Modal not found:', modalId);
+                this.showNotification('Erro ao abrir formulário', 'error');
             }
         };
 
@@ -387,6 +397,7 @@ class SGC {
             if (modal) {
                 modal.classList.add('hidden');
                 this.resetForm(modalId);
+                console.log('Modal closed successfully:', modalId);
             }
         };
 
@@ -407,11 +418,9 @@ class SGC {
         const form = modal.querySelector('form');
         if (form) form.reset();
         
-        // Reset hidden ID fields
         const idField = modal.querySelector('input[type="hidden"]');
         if (idField) idField.value = '';
         
-        // Reset orçamento items table
         if (modalId === 'orcamentoModal') {
             const tbody = document.getElementById('orcamentoItensTableBody');
             if (tbody) tbody.innerHTML = '';
@@ -419,7 +428,6 @@ class SGC {
             this.updateOrcamentoTotals();
         }
 
-        // Reset modal title
         const titleElement = modal.querySelector('.modal-header h3');
         if (titleElement) {
             const defaultTitles = {
@@ -433,11 +441,10 @@ class SGC {
         }
     }
 
-    // Forms
+    // Forms - Fixed implementation
     setupForms() {
         console.log('Setting up forms...');
         
-        // Cliente Form
         const clienteForm = document.getElementById('clienteForm');
         if (clienteForm) {
             clienteForm.addEventListener('submit', (e) => {
@@ -446,7 +453,6 @@ class SGC {
             });
         }
 
-        // Representada Form
         const representadaForm = document.getElementById('representadaForm');
         if (representadaForm) {
             representadaForm.addEventListener('submit', (e) => {
@@ -455,7 +461,6 @@ class SGC {
             });
         }
 
-        // Produto Form
         const produtoForm = document.getElementById('produtoForm');
         if (produtoForm) {
             produtoForm.addEventListener('submit', (e) => {
@@ -464,7 +469,6 @@ class SGC {
             });
         }
 
-        // Orçamento Form
         const orcamentoForm = document.getElementById('orcamentoForm');
         if (orcamentoForm) {
             orcamentoForm.addEventListener('submit', (e) => {
@@ -473,7 +477,6 @@ class SGC {
             });
         }
 
-        // Visita Form
         const visitaForm = document.getElementById('visitaForm');
         if (visitaForm) {
             visitaForm.addEventListener('submit', (e) => {
@@ -482,7 +485,6 @@ class SGC {
             });
         }
 
-        // Configurações Forms
         const configRepresentanteForm = document.getElementById('configRepresentanteForm');
         if (configRepresentanteForm) {
             configRepresentanteForm.addEventListener('submit', (e) => {
@@ -499,7 +501,20 @@ class SGC {
             });
         }
 
-        // Global functions for buttons
+        // Setup IE field validation
+        const clienteIE = document.getElementById('clienteIE');
+        if (clienteIE) {
+            clienteIE.addEventListener('input', (e) => {
+                // Allow only numbers
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                // Limit to 14 digits
+                if (e.target.value.length > 14) {
+                    e.target.value = e.target.value.substring(0, 14);
+                }
+            });
+        }
+
+        // Global functions for buttons - Make sure these are properly set
         window.addItemToOrcamento = () => this.addItemToOrcamento();
         window.removeItemFromOrcamento = (index) => this.removeItemFromOrcamento(index);
         window.previewOrcamento = () => this.previewOrcamento();
@@ -509,13 +524,22 @@ class SGC {
         console.log('Forms setup completed');
     }
 
-    // CRUD Operations - Clientes
+    // CRUD Operations - Clientes (Updated for IE)
     saveCliente() {
+        const ie = document.getElementById('clienteIE').value.trim();
+        
+        // Validate IE (3-14 digits)
+        if (!ie || ie.length < 3 || ie.length > 14) {
+            this.showNotification('Inscrição Estadual deve ter entre 3 e 14 dígitos!', 'error');
+            return;
+        }
+
         const id = document.getElementById('clienteId').value;
         const cliente = {
             id: id ? parseInt(id) : Date.now(),
             nome: document.getElementById('clienteNome').value,
             cnpj: document.getElementById('clienteCnpj').value,
+            ie: ie,
             telefone: document.getElementById('clienteTelefone').value,
             email: document.getElementById('clienteEmail').value,
             endereco: document.getElementById('clienteEndereco').value,
@@ -548,6 +572,7 @@ class SGC {
         document.getElementById('clienteId').value = cliente.id;
         document.getElementById('clienteNome').value = cliente.nome;
         document.getElementById('clienteCnpj').value = cliente.cnpj;
+        document.getElementById('clienteIE').value = cliente.ie || '';
         document.getElementById('clienteTelefone').value = cliente.telefone;
         document.getElementById('clienteEmail').value = cliente.email || '';
         document.getElementById('clienteEndereco').value = cliente.endereco || '';
@@ -570,15 +595,18 @@ class SGC {
         }
     }
 
-    // CRUD Operations - Representadas
+    // CRUD Operations - Representadas (Updated for v3)
     saveRepresentada() {
         const id = document.getElementById('representadaId').value;
         const representada = {
             id: id ? parseInt(id) : Date.now(),
             nome: document.getElementById('representadaNome').value,
             cnpj: document.getElementById('representadaCnpj').value,
+            inscricaoMunicipal: document.getElementById('representadaIM').value || '',
+            endereco: document.getElementById('representadaEndereco').value,
             telefone: document.getElementById('representadaTelefone').value,
             email: document.getElementById('representadaEmail').value,
+            logo: document.getElementById('representadaLogo').value || '',
             comissao: parseFloat(document.getElementById('representadaComissao').value),
             produtos: document.getElementById('representadaProdutos').value.split(',').map(p => p.trim()).filter(p => p)
         };
@@ -604,8 +632,11 @@ class SGC {
         document.getElementById('representadaId').value = representada.id;
         document.getElementById('representadaNome').value = representada.nome;
         document.getElementById('representadaCnpj').value = representada.cnpj;
+        document.getElementById('representadaIM').value = representada.inscricaoMunicipal || '';
+        document.getElementById('representadaEndereco').value = representada.endereco || '';
         document.getElementById('representadaTelefone').value = representada.telefone;
         document.getElementById('representadaEmail').value = representada.email || '';
+        document.getElementById('representadaLogo').value = representada.logo || '';
         document.getElementById('representadaComissao').value = representada.comissao;
         document.getElementById('representadaProdutos').value = representada.produtos.join(', ');
 
@@ -678,17 +709,20 @@ class SGC {
         }
     }
 
-    // CRUD Operations - Orçamentos
+    // CRUD Operations - Orçamentos (Updated for v3)
     setupOrcamentoModal() {
+        console.log('Setting up orçamento modal...');
         this.populateClienteSelects();
         this.populateProdutoSelects();
+        this.populateRepresentadaSelects();
         document.getElementById('orcamentoData').value = this.formatDateForInput(new Date());
+        console.log('Orçamento modal setup completed');
     }
 
     saveOrcamento() {
         const id = document.getElementById('orcamentoId').value;
         const cliente = document.getElementById('orcamentoCliente').value;
-
+        
         if (!cliente) {
             this.showNotification('Selecione um cliente!', 'error');
             return;
@@ -697,6 +731,17 @@ class SGC {
         if (this.currentOrcamentoItems.length === 0) {
             this.showNotification('Adicione pelo menos um item ao orçamento!', 'error');
             return;
+        }
+
+        // Determine main representada
+        let representadaPrincipal = document.getElementById('orcamentoRepresentada').value;
+        if (!representadaPrincipal && this.currentOrcamentoItems.length > 0) {
+            // Auto-select from first item
+            const firstItem = this.currentOrcamentoItems[0];
+            const produto = this.data.produtos.find(p => p.descricao === firstItem.produto);
+            if (produto) {
+                representadaPrincipal = produto.representada;
+            }
         }
 
         const subtotal = this.calculateOrcamentoSubtotal();
@@ -713,6 +758,7 @@ class SGC {
             id: id ? parseInt(id) : Date.now(),
             numero: id ? this.data.orcamentos.find(o => o.id == id)?.numero : `ORÇ-2025-${String(this.nextOrcamentoNumber).padStart(3, '0')}`,
             cliente: cliente,
+            representadaPrincipal: representadaPrincipal,
             data: document.getElementById('orcamentoData').value,
             validade: this.formatDateForInput(dataValidade),
             status: document.getElementById('orcamentoStatus').value,
@@ -753,29 +799,34 @@ class SGC {
         const produto = this.data.produtos.find(p => p.descricao === produtoSelect.value);
         if (!produto) return;
 
-        // Check if product already exists in items
         const existingItemIndex = this.currentOrcamentoItems.findIndex(item => item.produto === produto.descricao);
         
         if (existingItemIndex >= 0) {
-            // Update existing item
             this.currentOrcamentoItems[existingItemIndex].quantidade += quantidade;
             this.currentOrcamentoItems[existingItemIndex].desconto = desconto;
         } else {
-            // Add new item
             this.currentOrcamentoItems.push({
                 codigo: produto.codigo,
                 produto: produto.descricao,
+                representada: produto.representada,
                 quantidade: quantidade,
                 precoUnitario: produto.preco,
                 desconto: desconto,
                 total: produto.preco * quantidade * (1 - desconto/100)
             });
+
+            // Auto-select main representada if first item
+            if (this.currentOrcamentoItems.length === 1) {
+                const representadaSelect = document.getElementById('orcamentoRepresentada');
+                if (representadaSelect && !representadaSelect.value) {
+                    representadaSelect.value = produto.representada;
+                }
+            }
         }
 
         this.renderOrcamentoItemsTable();
         this.updateOrcamentoTotals();
 
-        // Reset form
         produtoSelect.value = '';
         document.getElementById('itemQuantidade').value = '1';
         document.getElementById('itemDesconto').value = '0';
@@ -796,6 +847,7 @@ class SGC {
             row.innerHTML = `
                 <td>${item.codigo}</td>
                 <td>${item.produto}</td>
+                <td>${item.representada}</td>
                 <td>${item.quantidade}</td>
                 <td>R$ ${this.formatCurrency(item.precoUnitario)}</td>
                 <td>${item.desconto}%</td>
@@ -866,10 +918,10 @@ class SGC {
         document.getElementById('orcamentoId').value = orcamento.id;
         document.getElementById('orcamentoCliente').value = orcamento.cliente;
         document.getElementById('orcamentoData').value = orcamento.data;
+        document.getElementById('orcamentoRepresentada').value = orcamento.representadaPrincipal || '';
         document.getElementById('orcamentoStatus').value = orcamento.status;
         document.getElementById('orcamentoObservacoes').value = orcamento.observacoes || '';
 
-        // Load items
         this.currentOrcamentoItems = [...orcamento.itens];
         this.renderOrcamentoItemsTable();
         this.updateOrcamentoTotals();
@@ -889,7 +941,7 @@ class SGC {
         }
     }
 
-    // PDF and Preview Functions
+    // PDF and Preview Functions (Updated for v3)
     previewOrcamento() {
         const cliente = document.getElementById('orcamentoCliente').value;
         if (!cliente || this.currentOrcamentoItems.length === 0) {
@@ -903,10 +955,21 @@ class SGC {
 
     generatePreview() {
         const cliente = this.data.clientes.find(c => c.nome === document.getElementById('orcamentoCliente').value);
-        const config = this.data.configuracoes;
+        
+        // Get main representada
+        let representadaPrincipal = document.getElementById('orcamentoRepresentada').value;
+        if (!representadaPrincipal && this.currentOrcamentoItems.length > 0) {
+            const firstItem = this.currentOrcamentoItems[0];
+            const produto = this.data.produtos.find(p => p.descricao === firstItem.produto);
+            if (produto) {
+                representadaPrincipal = produto.representada;
+            }
+        }
+        
+        const dadosRepresentada = this.data.representadas.find(r => r.nome === representadaPrincipal);
         
         const dataOrcamento = new Date(document.getElementById('orcamentoData').value);
-        const validadeDias = config.orcamento?.validadeOrcamento || 30;
+        const validadeDias = this.data.configuracoes.orcamento?.validadeOrcamento || 30;
         const dataValidade = new Date(dataOrcamento);
         dataValidade.setDate(dataValidade.getDate() + validadeDias);
 
@@ -914,20 +977,24 @@ class SGC {
         const descontoTotal = this.calculateOrcamentoDesconto();
         const total = subtotal - descontoTotal;
 
+        // Group items by representada if multiple representadas
+        const representadasUsadas = [...new Set(this.currentOrcamentoItems.map(item => item.representada))];
+        
         const previewContent = document.getElementById('previewContent');
         if (!previewContent) return;
         
         previewContent.innerHTML = `
             <div class="header-section">
-                <div class="company-info">
-                    <h1>${config.representante?.nome || 'Representação Comercial'}</h1>
-                    <p><strong>CNPJ:</strong> ${config.representante?.cnpj || 'Não informado'}</p>
-                    <p><strong>Endereço:</strong> ${config.representante?.endereco || 'Não informado'}</p>
-                    <p><strong>Telefone:</strong> ${config.representante?.telefone || 'Não informado'}</p>
-                    <p><strong>Email:</strong> ${config.representante?.email || 'Não informado'}</p>
+                <div class="representada-info">
+                    ${dadosRepresentada?.logo ? `<div class="representada-logo">${dadosRepresentada.logo}</div>` : '<div class="representada-logo">Logo da Representada</div>'}
+                    <h1>${dadosRepresentada?.nome || 'Representada Principal'}</h1>
+                    <p><strong>CNPJ:</strong> ${dadosRepresentada?.cnpj || 'Não informado'}</p>
+                    <p><strong>Endereço:</strong> ${dadosRepresentada?.endereco || 'Não informado'}</p>
+                    <p><strong>Telefone:</strong> ${dadosRepresentada?.telefone || 'Não informado'}</p>
+                    <p><strong>Email:</strong> ${dadosRepresentada?.email || 'Não informado'}</p>
                 </div>
                 <div class="orcamento-info">
-                    <h2>ORÇAMENTO</h2>
+                    <h2>PROPOSTA / ORÇAMENTO</h2>
                     <p><strong>Número:</strong> ORÇ-2025-${String(this.nextOrcamentoNumber).padStart(3, '0')}</p>
                     <p><strong>Data:</strong> ${this.formatDate(document.getElementById('orcamentoData').value)}</p>
                     <p><strong>Validade:</strong> ${this.formatDate(this.formatDateForInput(dataValidade))}</p>
@@ -936,45 +1003,106 @@ class SGC {
 
             <div class="client-section">
                 <h3>DADOS DO CLIENTE</h3>
-                <p><strong>Razão Social:</strong> ${cliente?.nome || 'Cliente não encontrado'}</p>
-                <p><strong>CNPJ/CPF:</strong> ${cliente?.cnpj || 'Não informado'}</p>
-                <p><strong>Endereço:</strong> ${cliente?.endereco || 'Não informado'}</p>
-                <p><strong>Telefone:</strong> ${cliente?.telefone || 'Não informado'}</p>
-                <p><strong>Email:</strong> ${cliente?.email || 'Não informado'}</p>
-                ${cliente?.contato ? `<p><strong>Contato:</strong> ${cliente.contato}</p>` : ''}
+                <div class="client-info-grid">
+                    <div>
+                        <p><strong>Razão Social:</strong> ${cliente?.nome || 'Cliente não encontrado'}</p>
+                        <p><strong>CNPJ/CPF:</strong> ${cliente?.cnpj || 'Não informado'}</p>
+                        <p><strong>Inscrição Estadual:</strong> ${cliente?.ie || 'Não informado'}</p>
+                        <p><strong>Telefone:</strong> ${cliente?.telefone || 'Não informado'}</p>
+                    </div>
+                    <div>
+                        <p><strong>Endereço:</strong> ${cliente?.endereco || 'Não informado'}</p>
+                        <p><strong>Email:</strong> ${cliente?.email || 'Não informado'}</p>
+                        ${cliente?.contato ? `<p><strong>Contato:</strong> ${cliente.contato}</p>` : ''}
+                    </div>
+                </div>
             </div>
+
+            ${representadasUsadas.length > 1 ? `
+                <div class="representadas-section">
+                    <h3>REPRESENTADAS PARTICIPANTES</h3>
+                    ${representadasUsadas.map(nomeRep => {
+                        const rep = this.data.representadas.find(r => r.nome === nomeRep);
+                        return `
+                            <div class="representada-item">
+                                <strong>${rep?.nome || nomeRep}</strong><br>
+                                CNPJ: ${rep?.cnpj || 'N/A'} | Telefone: ${rep?.telefone || 'N/A'} | Email: ${rep?.email || 'N/A'}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            ` : ''}
 
             <div class="items-section">
                 <h3>ITENS DO ORÇAMENTO</h3>
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Descrição</th>
-                            <th>Qtd</th>
-                            <th>Preço Unit.</th>
-                            <th>Desconto</th>
-                            <th class="text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${this.currentOrcamentoItems.map(item => {
-                            const subtotalItem = item.precoUnitario * item.quantidade;
-                            const descontoValor = subtotalItem * (item.desconto / 100);
-                            const totalItem = subtotalItem - descontoValor;
-                            return `
-                                <tr>
-                                    <td>${item.codigo}</td>
-                                    <td>${item.produto}</td>
-                                    <td>${item.quantidade}</td>
-                                    <td>R$ ${this.formatCurrency(item.precoUnitario)}</td>
-                                    <td>${item.desconto}%</td>
-                                    <td class="text-right">R$ ${this.formatCurrency(totalItem)}</td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
+                ${representadasUsadas.length > 1 ? `
+                    <div class="items-by-representada">
+                        ${representadasUsadas.map(nomeRep => `
+                            <div class="representada-group">
+                                <h4>${nomeRep}</h4>
+                                <table class="items-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Descrição</th>
+                                            <th>Qtd</th>
+                                            <th>Preço Unit.</th>
+                                            <th>Desconto</th>
+                                            <th class="text-right">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${this.currentOrcamentoItems.filter(item => item.representada === nomeRep).map(item => {
+                                            const subtotalItem = item.precoUnitario * item.quantidade;
+                                            const descontoValor = subtotalItem * (item.desconto / 100);
+                                            const totalItem = subtotalItem - descontoValor;
+                                            return `
+                                                <tr>
+                                                    <td>${item.codigo}</td>
+                                                    <td>${item.produto}</td>
+                                                    <td>${item.quantidade}</td>
+                                                    <td>R$ ${this.formatCurrency(item.precoUnitario)}</td>
+                                                    <td>${item.desconto}%</td>
+                                                    <td class="text-right">R$ ${this.formatCurrency(totalItem)}</td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : `
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Qtd</th>
+                                <th>Preço Unit.</th>
+                                <th>Desconto</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${this.currentOrcamentoItems.map(item => {
+                                const subtotalItem = item.precoUnitario * item.quantidade;
+                                const descontoValor = subtotalItem * (item.desconto / 100);
+                                const totalItem = subtotalItem - descontoValor;
+                                return `
+                                    <tr>
+                                        <td>${item.codigo}</td>
+                                        <td>${item.produto}</td>
+                                        <td>${item.quantidade}</td>
+                                        <td>R$ ${this.formatCurrency(item.precoUnitario)}</td>
+                                        <td>${item.desconto}%</td>
+                                        <td class="text-right">R$ ${this.formatCurrency(totalItem)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `}
             </div>
 
             <div class="totals-section">
@@ -998,25 +1126,25 @@ class SGC {
                 <div class="footer-info">
                     <div>
                         <h4>Condições de Pagamento</h4>
-                        <p>${config.orcamento?.condicoesPagamento || '30 dias após entrega'}</p>
+                        <p>${this.data.configuracoes.orcamento?.condicoesPagamento || '30 dias após entrega'}</p>
                         
                         <h4>Prazo de Entrega</h4>
-                        <p>${config.orcamento?.prazoEntrega || '15 dias úteis'}</p>
+                        <p>${this.data.configuracoes.orcamento?.prazoEntrega || '15 dias úteis'}</p>
                     </div>
                     <div>
                         <h4>Validade da Proposta</h4>
                         <p>${validadeDias} dias</p>
                         
                         <h4>Contato</h4>
-                        <p>${config.representante?.telefone || 'Não informado'}</p>
-                        <p>${config.representante?.email || 'Não informado'}</p>
+                        <p>${dadosRepresentada?.telefone || 'Não informado'}</p>
+                        <p>${dadosRepresentada?.email || 'Não informado'}</p>
                     </div>
                 </div>
                 
-                ${(document.getElementById('orcamentoObservacoes').value || config.orcamento?.observacoesPadrao) ? `
+                ${(document.getElementById('orcamentoObservacoes').value || this.data.configuracoes.orcamento?.observacoesPadrao) ? `
                     <div class="observations">
                         <h4>Observações</h4>
-                        <p>${document.getElementById('orcamentoObservacoes').value || config.orcamento?.observacoesPadrao || ''}</p>
+                        <p>${document.getElementById('orcamentoObservacoes').value || this.data.configuracoes.orcamento?.observacoesPadrao || ''}</p>
                     </div>
                 ` : ''}
             </div>
@@ -1039,7 +1167,6 @@ class SGC {
     }
 
     createPDF() {
-        // Check if jsPDF is available
         if (typeof window.jspdf === 'undefined') {
             this.showNotification('Biblioteca jsPDF não carregada. Recarregue a página.', 'error');
             return;
@@ -1049,10 +1176,21 @@ class SGC {
         const pdf = new jsPDF();
         
         const cliente = this.data.clientes.find(c => c.nome === document.getElementById('orcamentoCliente').value);
-        const config = this.data.configuracoes;
+        
+        // Get main representada data
+        let representadaPrincipal = document.getElementById('orcamentoRepresentada').value;
+        if (!representadaPrincipal && this.currentOrcamentoItems.length > 0) {
+            const firstItem = this.currentOrcamentoItems[0];
+            const produto = this.data.produtos.find(p => p.descricao === firstItem.produto);
+            if (produto) {
+                representadaPrincipal = produto.representada;
+            }
+        }
+        
+        const dadosRepresentada = this.data.representadas.find(r => r.nome === representadaPrincipal);
         
         const dataOrcamento = new Date(document.getElementById('orcamentoData').value);
-        const validadeDias = config.orcamento?.validadeOrcamento || 30;
+        const validadeDias = this.data.configuracoes.orcamento?.validadeOrcamento || 30;
         const dataValidade = new Date(dataOrcamento);
         dataValidade.setDate(dataValidade.getDate() + validadeDias);
 
@@ -1062,129 +1200,165 @@ class SGC {
         
         const numeroOrcamento = `ORÇ-2025-${String(this.nextOrcamentoNumber).padStart(3, '0')}`;
 
-        // Define colors
         const primaryColor = [31, 128, 141]; // Teal
         const textColor = [51, 51, 51];
         const lightGray = [245, 245, 245];
         
         let yPosition = 20;
 
-        // Header - Company Info
-        pdf.setFontSize(24);
+        // Header - Representada Info (LEFT ALIGNED)
+        pdf.setFontSize(20);
         pdf.setTextColor(...primaryColor);
         pdf.setFont(undefined, 'bold');
-        pdf.text(config.representante?.nome || 'Representação Comercial', 20, yPosition);
+        pdf.text(dadosRepresentada?.nome || 'Representada Principal', 20, yPosition);
         
-        yPosition += 10;
-        pdf.setFontSize(10);
+        yPosition += 8;
+        pdf.setFontSize(9);
         pdf.setTextColor(...textColor);
         pdf.setFont(undefined, 'normal');
         
-        if (config.representante?.cnpj) {
-            pdf.text(`CNPJ: ${config.representante.cnpj}`, 20, yPosition);
-            yPosition += 5;
+        if (dadosRepresentada?.cnpj) {
+            pdf.text(`CNPJ: ${dadosRepresentada.cnpj}`, 20, yPosition);
+            yPosition += 4;
         }
-        if (config.representante?.endereco) {
-            pdf.text(`${config.representante.endereco}`, 20, yPosition);
-            yPosition += 5;
+        if (dadosRepresentada?.endereco) {
+            const enderecoLines = pdf.splitTextToSize(dadosRepresentada.endereco, 100);
+            pdf.text(enderecoLines, 20, yPosition);
+            yPosition += enderecoLines.length * 4;
         }
-        if (config.representante?.telefone) {
-            pdf.text(`Tel: ${config.representante.telefone}`, 20, yPosition);
-            yPosition += 5;
+        if (dadosRepresentada?.telefone) {
+            pdf.text(`Tel: ${dadosRepresentada.telefone}`, 20, yPosition);
+            yPosition += 4;
         }
-        if (config.representante?.email) {
-            pdf.text(`Email: ${config.representante.email}`, 20, yPosition);
-            yPosition += 5;
+        if (dadosRepresentada?.email) {
+            pdf.text(`Email: ${dadosRepresentada.email}`, 20, yPosition);
+            yPosition += 4;
+        }
+
+        // Logo placeholder (if exists)
+        if (dadosRepresentada?.logo) {
+            pdf.setDrawColor(...primaryColor);
+            pdf.rect(20, 15, 30, 15);
+            pdf.setFontSize(8);
+            pdf.text('LOGO', 32, 24);
         }
 
         // Orçamento Info - Right side
-        pdf.setFontSize(18);
+        pdf.setFontSize(16);
         pdf.setTextColor(...primaryColor);
         pdf.setFont(undefined, 'bold');
-        pdf.text('ORÇAMENTO', 140, 30);
+        pdf.text('PROPOSTA / ORÇAMENTO', 130, 25);
         
-        pdf.setFontSize(10);
+        pdf.setFontSize(9);
         pdf.setTextColor(...textColor);
         pdf.setFont(undefined, 'normal');
-        pdf.text(`Número: ${numeroOrcamento}`, 140, 40);
-        pdf.text(`Data: ${this.formatDate(document.getElementById('orcamentoData').value)}`, 140, 45);
-        pdf.text(`Validade: ${this.formatDate(this.formatDateForInput(dataValidade))}`, 140, 50);
+        pdf.text(`Número: ${numeroOrcamento}`, 130, 33);
+        pdf.text(`Data: ${this.formatDate(document.getElementById('orcamentoData').value)}`, 130, 37);
+        pdf.text(`Validade: ${this.formatDate(this.formatDateForInput(dataValidade))}`, 130, 41);
 
         // Line separator
-        yPosition = 60;
+        yPosition = Math.max(yPosition, 50);
         pdf.setDrawColor(...primaryColor);
         pdf.setLineWidth(0.5);
         pdf.line(20, yPosition, 190, yPosition);
 
         // Client Info
-        yPosition += 10;
-        pdf.setFontSize(12);
+        yPosition += 8;
+        pdf.setFontSize(11);
         pdf.setTextColor(...primaryColor);
         pdf.setFont(undefined, 'bold');
         pdf.text('DADOS DO CLIENTE', 20, yPosition);
         
-        yPosition += 8;
-        pdf.setFontSize(10);
+        yPosition += 6;
+        pdf.setFontSize(9);
         pdf.setTextColor(...textColor);
         pdf.setFont(undefined, 'normal');
         
         if (cliente?.nome) {
             pdf.text(`Razão Social: ${cliente.nome}`, 20, yPosition);
-            yPosition += 5;
+            yPosition += 4;
         }
         if (cliente?.cnpj) {
             pdf.text(`CNPJ/CPF: ${cliente.cnpj}`, 20, yPosition);
-            yPosition += 5;
+            yPosition += 4;
+        }
+        // V3 UPDATE: Include IE
+        if (cliente?.ie) {
+            pdf.text(`Inscrição Estadual: ${cliente.ie}`, 20, yPosition);
+            yPosition += 4;
         }
         if (cliente?.endereco) {
             pdf.text(`Endereço: ${cliente.endereco}`, 20, yPosition);
-            yPosition += 5;
+            yPosition += 4;
         }
         if (cliente?.telefone) {
             pdf.text(`Telefone: ${cliente.telefone}`, 20, yPosition);
-            yPosition += 5;
+            yPosition += 4;
         }
         if (cliente?.email) {
             pdf.text(`Email: ${cliente.email}`, 20, yPosition);
-            yPosition += 5;
+            yPosition += 4;
         }
         if (cliente?.contato) {
             pdf.text(`Contato: ${cliente.contato}`, 20, yPosition);
+            yPosition += 4;
+        }
+
+        // Multiple representadas section if needed
+        const representadasUsadas = [...new Set(this.currentOrcamentoItems.map(item => item.representada))];
+        if (representadasUsadas.length > 1) {
             yPosition += 5;
+            pdf.setFontSize(11);
+            pdf.setTextColor(...primaryColor);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('REPRESENTADAS PARTICIPANTES', 20, yPosition);
+            
+            yPosition += 6;
+            pdf.setFontSize(8);
+            pdf.setTextColor(...textColor);
+            pdf.setFont(undefined, 'normal');
+            
+            representadasUsadas.forEach(nomeRep => {
+                const rep = this.data.representadas.find(r => r.nome === nomeRep);
+                if (rep) {
+                    pdf.text(`${rep.nome} - CNPJ: ${rep.cnpj} - Tel: ${rep.telefone}`, 20, yPosition);
+                    yPosition += 4;
+                }
+            });
         }
 
         // Items Table
-        yPosition += 10;
-        pdf.setFontSize(12);
+        yPosition += 8;
+        pdf.setFontSize(11);
         pdf.setTextColor(...primaryColor);
         pdf.setFont(undefined, 'bold');
         pdf.text('ITENS DO ORÇAMENTO', 20, yPosition);
         
-        yPosition += 10;
+        yPosition += 8;
         
         // Table header
         const tableHeaders = ['Código', 'Descrição', 'Qtd', 'Preço Unit.', 'Desc.', 'Total'];
-        const colWidths = [20, 70, 15, 25, 15, 25];
+        const colWidths = [18, 70, 12, 22, 12, 22];
         let xPosition = 20;
         
         pdf.setFillColor(...lightGray);
-        pdf.rect(xPosition, yPosition - 5, 170, 8, 'F');
+        pdf.rect(xPosition, yPosition - 4, 156, 6, 'F');
         
-        pdf.setFontSize(9);
+        pdf.setFontSize(8);
         pdf.setTextColor(...textColor);
         pdf.setFont(undefined, 'bold');
         
         tableHeaders.forEach((header, index) => {
-            pdf.text(header, xPosition + 2, yPosition);
+            pdf.text(header, xPosition + 1, yPosition);
             xPosition += colWidths[index];
         });
         
-        yPosition += 8;
+        yPosition += 6;
         
         // Table rows
         pdf.setFont(undefined, 'normal');
         this.currentOrcamentoItems.forEach(item => {
-            if (yPosition > 250) { // New page if needed
+            if (yPosition > 250) {
                 pdf.addPage();
                 yPosition = 20;
             }
@@ -1196,7 +1370,7 @@ class SGC {
             
             const rowData = [
                 item.codigo,
-                item.produto.substring(0, 35), // Truncate long descriptions
+                item.produto.substring(0, 35),
                 item.quantidade.toString(),
                 `R$ ${this.formatCurrency(item.precoUnitario)}`,
                 `${item.desconto}%`,
@@ -1204,37 +1378,37 @@ class SGC {
             ];
             
             rowData.forEach((data, index) => {
-                if (index === 5) { // Right align total
-                    pdf.text(data, xPosition + colWidths[index] - 2, yPosition, { align: 'right' });
+                if (index === 5) {
+                    pdf.text(data, xPosition + colWidths[index] - 1, yPosition, { align: 'right' });
                 } else {
-                    pdf.text(data, xPosition + 2, yPosition);
+                    pdf.text(data, xPosition + 1, yPosition);
                 }
                 xPosition += colWidths[index];
             });
             
-            yPosition += 6;
+            yPosition += 5;
         });
 
         // Totals
-        yPosition += 10;
-        const totalsX = 140;
+        yPosition += 8;
+        const totalsX = 130;
         
         pdf.setFont(undefined, 'normal');
         pdf.text('Subtotal:', totalsX, yPosition);
-        pdf.text(`R$ ${this.formatCurrency(subtotal)}`, totalsX + 50, yPosition, { align: 'right' });
+        pdf.text(`R$ ${this.formatCurrency(subtotal)}`, totalsX + 40, yPosition, { align: 'right' });
         
-        yPosition += 6;
+        yPosition += 5;
         pdf.text('Desconto Total:', totalsX, yPosition);
-        pdf.text(`R$ ${this.formatCurrency(descontoTotal)}`, totalsX + 50, yPosition, { align: 'right' });
+        pdf.text(`R$ ${this.formatCurrency(descontoTotal)}`, totalsX + 40, yPosition, { align: 'right' });
         
-        yPosition += 8;
+        yPosition += 7;
         pdf.setFont(undefined, 'bold');
         pdf.setTextColor(...primaryColor);
         pdf.text('TOTAL GERAL:', totalsX, yPosition);
-        pdf.text(`R$ ${this.formatCurrency(total)}`, totalsX + 50, yPosition, { align: 'right' });
+        pdf.text(`R$ ${this.formatCurrency(total)}`, totalsX + 40, yPosition, { align: 'right' });
 
         // Footer
-        yPosition += 15;
+        yPosition += 12;
         if (yPosition > 240) {
             pdf.addPage();
             yPosition = 20;
@@ -1243,38 +1417,37 @@ class SGC {
         pdf.setDrawColor(...primaryColor);
         pdf.line(20, yPosition, 190, yPosition);
         
-        yPosition += 10;
-        pdf.setFontSize(10);
+        yPosition += 8;
+        pdf.setFontSize(9);
         pdf.setTextColor(...textColor);
         pdf.setFont(undefined, 'bold');
         
-        // Two columns for conditions
         pdf.text('Condições de Pagamento:', 20, yPosition);
         pdf.text('Prazo de Entrega:', 110, yPosition);
         
-        yPosition += 6;
+        yPosition += 5;
         pdf.setFont(undefined, 'normal');
-        pdf.text(config.orcamento?.condicoesPagamento || '30 dias após entrega', 20, yPosition);
-        pdf.text(config.orcamento?.prazoEntrega || '15 dias úteis', 110, yPosition);
+        pdf.text(this.data.configuracoes.orcamento?.condicoesPagamento || '30 dias após entrega', 20, yPosition);
+        pdf.text(this.data.configuracoes.orcamento?.prazoEntrega || '15 dias úteis', 110, yPosition);
         
-        yPosition += 8;
+        yPosition += 6;
         pdf.setFont(undefined, 'bold');
         pdf.text('Validade da Proposta:', 20, yPosition);
         pdf.text('Contato:', 110, yPosition);
         
-        yPosition += 6;
+        yPosition += 5;
         pdf.setFont(undefined, 'normal');
         pdf.text(`${validadeDias} dias`, 20, yPosition);
-        pdf.text(`${config.representante?.telefone || 'N/A'} - ${config.representante?.email || 'N/A'}`, 110, yPosition);
+        pdf.text(`${dadosRepresentada?.telefone || 'N/A'} - ${dadosRepresentada?.email || 'N/A'}`, 110, yPosition);
 
         // Observations
-        const observacoes = document.getElementById('orcamentoObservacoes').value || config.orcamento?.observacoesPadrao;
+        const observacoes = document.getElementById('orcamentoObservacoes').value || this.data.configuracoes.orcamento?.observacoesPadrao;
         if (observacoes) {
-            yPosition += 10;
+            yPosition += 8;
             pdf.setFont(undefined, 'bold');
             pdf.text('Observações:', 20, yPosition);
             
-            yPosition += 6;
+            yPosition += 5;
             pdf.setFont(undefined, 'normal');
             const splitObservacoes = pdf.splitTextToSize(observacoes, 170);
             pdf.text(splitObservacoes, 20, yPosition);
@@ -1282,7 +1455,7 @@ class SGC {
 
         // Save PDF
         const clienteNome = cliente?.nome?.replace(/[^\w\s]/gi, '').replace(/\s+/g, '_') || 'Cliente';
-        const fileName = `Orcamento_${numeroOrcamento}_${clienteNome}.pdf`;
+        const fileName = `Proposta_${numeroOrcamento}_${clienteNome}.pdf`;
         
         pdf.save(fileName);
         this.showNotification('PDF gerado com sucesso!', 'success');
@@ -1343,7 +1516,6 @@ class SGC {
     loadConfigurations() {
         const config = this.data.configuracoes;
         
-        // Representante config
         const nomeEmpresa = document.getElementById('configNomeEmpresa');
         const cnpj = document.getElementById('configCnpj');
         const endereco = document.getElementById('configEndereco');
@@ -1358,7 +1530,6 @@ class SGC {
             if (email) email.value = config.representante.email || '';
         }
 
-        // Orcamento config
         const condicoesPagamento = document.getElementById('configCondicoesPagamento');
         const prazoEntrega = document.getElementById('configPrazoEntrega');
         const validadeOrcamento = document.getElementById('configValidadeOrcamento');
@@ -1419,7 +1590,6 @@ class SGC {
         const mesAtual = hoje.getMonth();
         const anoAtual = hoje.getFullYear();
 
-        // Calculate current month sales from approved budgets
         const vendasMes = this.data.orcamentos
             .filter(o => {
                 const dataOrcamento = new Date(o.data);
@@ -1429,13 +1599,9 @@ class SGC {
             })
             .reduce((total, o) => total + o.total, 0);
 
-        // Count pending budgets
         const orcamentosPendentes = this.data.orcamentos.filter(o => o.status === 'rascunho' || o.status === 'enviado').length;
-
-        // Count active clients
         const clientesAtivos = this.data.clientes.filter(c => c.status === 'ativo').length;
 
-        // Calculate commission to receive
         const comissaoAReceber = this.data.orcamentos
             .filter(o => o.status === 'aprovado')
             .reduce((total, o) => total + o.comissao, 0);
@@ -1471,7 +1637,6 @@ class SGC {
             this.charts.vendas.destroy();
         }
 
-        // Generate data for last 6 months
         const labels = [];
         const data = [];
         const hoje = new Date();
@@ -1534,7 +1699,6 @@ class SGC {
         
         alertsList.innerHTML = '';
 
-        // Check for inactive clients
         const hoje = new Date();
         this.data.clientes.forEach(cliente => {
             if (cliente.ultimaCompra) {
@@ -1553,7 +1717,6 @@ class SGC {
             }
         });
 
-        // Check for expired budgets
         this.data.orcamentos.forEach(orcamento => {
             const hoje = new Date();
             const dataValidade = new Date(orcamento.validade);
@@ -1568,7 +1731,6 @@ class SGC {
             }
         });
 
-        // Check for low stock
         this.data.produtos.forEach(produto => {
             if (produto.estoque < 10) {
                 const alert = document.createElement('div');
@@ -1633,6 +1795,7 @@ class SGC {
             row.innerHTML = `
                 <td>${cliente.nome}</td>
                 <td>${cliente.cnpj}</td>
+                <td>${cliente.ie || 'N/A'}</td>
                 <td>${cliente.telefone}</td>
                 <td><span class="status-badge ${cliente.status}">${cliente.status}</span></td>
                 <td>${cliente.ultimaCompra ? this.formatDate(cliente.ultimaCompra) : 'Nunca'}</td>
@@ -1658,6 +1821,7 @@ class SGC {
                 <td>${representada.nome}</td>
                 <td>${representada.cnpj}</td>
                 <td>${representada.telefone}</td>
+                <td>${representada.endereco || 'Não informado'}</td>
                 <td>${representada.comissao}%</td>
                 <td>${representada.produtos.join(', ')}</td>
                 <td class="action-buttons">
@@ -1705,6 +1869,7 @@ class SGC {
             row.innerHTML = `
                 <td>${orcamento.numero}</td>
                 <td>${orcamento.cliente}</td>
+                <td>${orcamento.representadaPrincipal || 'N/A'}</td>
                 <td>${this.formatDate(orcamento.data)}</td>
                 <td>${this.formatDate(orcamento.validade)}</td>
                 <td><span class="status-badge ${orcamento.status}">${orcamento.status}</span></td>
@@ -1724,25 +1889,23 @@ class SGC {
         const orcamento = this.data.orcamentos.find(o => o.id == id);
         if (!orcamento) return;
 
-        // Temporarily set current items for PDF generation
         this.currentOrcamentoItems = [...orcamento.itens];
         
-        // Set form values
         const clienteEl = document.getElementById('orcamentoCliente');
         const dataEl = document.getElementById('orcamentoData');
+        const representadaEl = document.getElementById('orcamentoRepresentada');
         const obsEl = document.getElementById('orcamentoObservacoes');
         
         if (clienteEl) clienteEl.value = orcamento.cliente;
         if (dataEl) dataEl.value = orcamento.data;
+        if (representadaEl) representadaEl.value = orcamento.representadaPrincipal || '';
         if (obsEl) obsEl.value = orcamento.observacoes || '';
         
-        // Override the next number for existing budget
         const originalNext = this.nextOrcamentoNumber;
         this.nextOrcamentoNumber = parseInt(orcamento.numero.split('-')[2]);
         
         this.createPDF();
         
-        // Restore original
         this.nextOrcamentoNumber = originalNext;
         this.currentOrcamentoItems = [];
     }
@@ -1773,13 +1936,15 @@ class SGC {
     }
 
     populateRepresentadaSelects() {
-        const selects = ['produtoRepresentada', 'filterRepresentada'];
+        const selects = ['produtoRepresentada', 'filterRepresentada', 'orcamentoRepresentada'];
         selects.forEach(selectId => {
             const select = document.getElementById(selectId);
             if (select) {
                 const currentValue = select.value;
                 if (selectId === 'filterRepresentada') {
                     select.innerHTML = '<option value="">Todas as representadas</option>';
+                } else if (selectId === 'orcamentoRepresentada') {
+                    select.innerHTML = '<option value="">Seleção automática pelo 1º item</option>';
                 } else {
                     select.innerHTML = '<option value="">Selecione...</option>';
                 }
@@ -1847,7 +2012,6 @@ class SGC {
 
         calendar.innerHTML = '';
 
-        // Add weekday headers
         const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
         weekdays.forEach(day => {
             const dayHeader = document.createElement('div');
@@ -1863,20 +2027,17 @@ class SGC {
             calendar.appendChild(dayHeader);
         });
 
-        // Get first day of month and number of days
         const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
         const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
         const daysInMonth = lastDay.getDate();
         const startingDay = firstDay.getDay();
 
-        // Add empty cells for days before month starts
         for (let i = 0; i < startingDay; i++) {
             const emptyDay = document.createElement('div');
             emptyDay.className = 'calendar-day other-month';
             calendar.appendChild(emptyDay);
         }
 
-        // Add days of the month
         const today = new Date();
         for (let day = 1; day <= daysInMonth; day++) {
             const dayElement = document.createElement('div');
@@ -1891,7 +2052,6 @@ class SGC {
 
             dayElement.innerHTML = `<div class="calendar-day-number">${day}</div>`;
 
-            // Add visits for this day
             const visitas = this.data.visitas.filter(v => v.data === dateString);
             visitas.forEach(visita => {
                 const visitaElement = document.createElement('div');
@@ -1963,7 +2123,6 @@ class SGC {
             this.charts.relatorioVendas.destroy();
         }
 
-        // Sample data - last 12 months
         const labels = [];
         const data = [];
         const hoje = new Date();
@@ -2025,7 +2184,6 @@ class SGC {
             this.charts.topProdutos.destroy();
         }
 
-        // Get top products from budgets
         const produtoVendas = {};
         this.data.orcamentos.forEach(orcamento => {
             if (orcamento.status === 'aprovado') {
@@ -2071,7 +2229,6 @@ class SGC {
             this.charts.comissoes.destroy();
         }
 
-        // Calculate commissions by representative
         const comissoesPorRep = {};
         this.data.orcamentos.forEach(orcamento => {
             if (orcamento.status === 'aprovado') {
@@ -2091,7 +2248,6 @@ class SGC {
         const labels = Object.keys(comissoesPorRep);
         const data = Object.values(comissoesPorRep);
 
-        // Fallback data if no commissions
         if (labels.length === 0) {
             labels.push('Sem dados');
             data.push(0);
@@ -2162,7 +2318,6 @@ class SGC {
 
     // Filters
     setupFilters() {
-        // Cliente filters
         const searchClientes = document.getElementById('searchClientes');
         if (searchClientes) {
             searchClientes.addEventListener('input', (e) => {
@@ -2173,30 +2328,28 @@ class SGC {
         const filterStatus = document.getElementById('filterStatus');
         if (filterStatus) {
             filterStatus.addEventListener('change', (e) => {
-                this.filterTable('clientesTableBody', e.target.value, 3, true);
+                this.filterTable('clientesTableBody', e.target.value, 4, true);
             });
         }
 
-        // Produto filters
         const searchProdutos = document.getElementById('searchProdutos');
         if (searchProdutos) {
             searchProdutos.addEventListener('input', (e) => {
-                this.filterTable('produtosTableBody', e.target.value, [1, 2]); // Description and brand
+                this.filterTable('produtosTableBody', e.target.value, [1, 2]);
             });
         }
 
-        // Orçamento filters
         const searchOrcamentos = document.getElementById('searchOrcamentos');
         if (searchOrcamentos) {
             searchOrcamentos.addEventListener('input', (e) => {
-                this.filterTable('orcamentosTableBody', e.target.value, [0, 1]); // Number and Client
+                this.filterTable('orcamentosTableBody', e.target.value, [0, 1]);
             });
         }
 
         const filterStatusOrcamento = document.getElementById('filterStatusOrcamento');
         if (filterStatusOrcamento) {
             filterStatusOrcamento.addEventListener('change', (e) => {
-                this.filterTable('orcamentosTableBody', e.target.value, 4, true);
+                this.filterTable('orcamentosTableBody', e.target.value, 5, true);
             });
         }
     }
@@ -2260,10 +2413,8 @@ class SGC {
 
         document.body.appendChild(notification);
 
-        // Show notification
         setTimeout(() => notification.classList.add('show'), 100);
 
-        // Hide and remove notification
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
@@ -2291,23 +2442,20 @@ window.gerarRelatorioVendas = function() {
 // Initialize the system
 let sgc;
 
-// Multiple initialization approaches to ensure it works
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOM loaded, initializing SGC...');
+    console.log('DOM loaded, initializing SGC v3...');
     try {
         sgc = new SGC();
         await sgc.init();
         
-        // Make sgc available globally for onclick handlers
         window.sgc = sgc;
         
-        console.log('SGC successfully initialized and available globally');
+        console.log('SGC v3 successfully initialized and available globally');
     } catch (error) {
-        console.error('Error initializing SGC:', error);
+        console.error('Error initializing SGC v3:', error);
     }
 });
 
-// Fallback initialization
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', async () => {
         if (!sgc) {
@@ -2318,7 +2466,6 @@ if (document.readyState === 'loading') {
         }
     });
 } else {
-    // DOM already loaded
     setTimeout(async () => {
         if (!sgc) {
             console.log('Immediate initialization...');

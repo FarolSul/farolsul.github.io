@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão Comercial</title>
+    <title>Sistema de Gestão Comercial v3</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <h1 class="logo">SGC - Sistema de Gestão Comercial</h1>
+                <h1 class="logo">SGC v3 - Sistema de Gestão Comercial</h1>
                 <nav class="nav-desktop">
                     <button class="nav-item active" data-section="dashboard">Dashboard</button>
                     <button class="nav-item" data-section="clientes">Clientes</button>
@@ -115,6 +115,7 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>CNPJ/CPF</th>
+                                <th>Inscrição Estadual</th>
                                 <th>Telefone</th>
                                 <th>Status</th>
                                 <th>Última Compra</th>
@@ -143,6 +144,7 @@
                                 <th>Nome</th>
                                 <th>CNPJ</th>
                                 <th>Telefone</th>
+                                <th>Endereço</th>
                                 <th>Comissão (%)</th>
                                 <th>Produtos</th>
                                 <th>Ações</th>
@@ -222,6 +224,7 @@
                             <tr>
                                 <th>Número</th>
                                 <th>Cliente</th>
+                                <th>Representada Principal</th>
                                 <th>Data</th>
                                 <th>Validade</th>
                                 <th>Status</th>
@@ -388,6 +391,10 @@
                         <input type="text" class="form-control" id="clienteCnpj" required>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Inscrição Estadual *</label>
+                        <input type="text" class="form-control" id="clienteIE" placeholder="Somente números" required maxlength="14">
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Telefone *</label>
                         <input type="tel" class="form-control" id="clienteTelefone" required>
                     </div>
@@ -433,7 +440,7 @@
                 <form id="representadaForm" class="modal-body">
                     <input type="hidden" id="representadaId">
                     <div class="form-group">
-                        <label class="form-label">Nome *</label>
+                        <label class="form-label">Nome Fantasia/Razão Social *</label>
                         <input type="text" class="form-control" id="representadaNome" required>
                     </div>
                     <div class="form-group">
@@ -441,12 +448,24 @@
                         <input type="text" class="form-control" id="representadaCnpj" required>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Inscrição Municipal</label>
+                        <input type="text" class="form-control" id="representadaIM">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Endereço Completo *</label>
+                        <textarea class="form-control" id="representadaEndereco" rows="2" required placeholder="Rua, número, bairro - Cidade/UF"></textarea>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Telefone *</label>
                         <input type="tel" class="form-control" id="representadaTelefone" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="representadaEmail">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="representadaEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Logo (URL ou simulação)</label>
+                        <input type="text" class="form-control" id="representadaLogo" placeholder="URL da logo ou nome do arquivo">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Comissão (%) *</label>
@@ -535,6 +554,13 @@
                             <input type="date" class="form-control" id="orcamentoData" required>
                         </div>
                         <div class="form-group">
+                            <label class="form-label">Representada Principal</label>
+                            <select class="form-control" id="orcamentoRepresentada">
+                                <option value="">Seleção automática pelo 1º item</option>
+                                <!-- Options serão inseridas via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Status</label>
                             <select class="form-control" id="orcamentoStatus">
                                 <option value="rascunho">Rascunho</option>
@@ -566,6 +592,7 @@
                                     <tr>
                                         <th>Código</th>
                                         <th>Produto</th>
+                                        <th>Representada</th>
                                         <th>Qtd</th>
                                         <th>Preço Unit.</th>
                                         <th>Desc. %</th>
@@ -657,7 +684,7 @@
         <div id="previewModal" class="modal modal--large hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Preview do Orçamento</h3>
+                    <h3>Preview da Proposta / Orçamento</h3>
                     <button class="modal-close" onclick="closeModal('previewModal')">&times;</button>
                 </div>
                 <div class="modal-body">
